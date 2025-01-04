@@ -46,4 +46,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function adminlte_image()
+    {
+        return "https://ui-avatars.com/api/?name={$this->name}";
+    }
 }
