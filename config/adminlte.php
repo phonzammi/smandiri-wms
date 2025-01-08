@@ -300,21 +300,16 @@ return [
 
     'menu' => [
         // Navbar items:
-        [
-            'type' => 'darkmode-widget',
-            'topnav_right' => true,
-        ],
+        // [
+        //     'type' => 'darkmode-widget',
+        //     'topnav_right' => true,
+        // ],
         // [
         //     'type' => 'navbar-search',
         //     'text' => 'search',
         //     'topnav_right' => true,
         // ],
 
-        // Sidebar items:
-        // [
-        //     'type' => 'sidebar-menu-search',
-        //     'text' => 'search',
-        // ],
         // Menu navigation
         [
             'text' => 'Dashboard',
@@ -343,21 +338,23 @@ return [
                 ],
             ],
         ],
-        // Bisa digabung:
         [
             'text' => 'Barang',
             'icon' => 'fas fa-fw fa-cubes',
-            'url' => '#',
-        ],
-        [
-            'text' => 'Barang Masuk',
-            'icon' => 'fas fa-fw fa-inbox',
-            'url' => '#',
-        ],
-        [
-            'text' => 'Barang Keluar',
-            'icon' => 'fas fa-fw fa-door-open',
-            'url' => '#',
+            'submenu' => [
+                [
+                    'text' => 'Stock',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'Barang Masuk',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'Barang Keluar',
+                    'url' => '#',
+                ],
+            ]
         ],
     ],
 
