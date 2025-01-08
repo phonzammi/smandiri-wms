@@ -1,0 +1,41 @@
+name: Run Feature tests
+ 
+on: [ push, pull_request ]
+ 
+jobs:
+    test:
+        # Prevent workflow being run twice, https://github.com/orgs/community/discussions/57827#discussioncomment-6579237
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.event.pull_request.base.repo.full_name
+        name: Run tests
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                php-version: '8.2'
+                extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
+                coverage: none
+            
+            - name: Run composer install
+              run: composer install -n --prefer-dist 
+              
+            - name: Prepare Laravel Application
+              run: |
+                cp .env.example .env
+                php artisan key:generate
+
+            - name: Asset Bundling (Vite)
+              run: npm install && npm run build
+
+            - name: Create Database
+              run: |
+                touch database/database.sqlite
+
+            - name: Migrate Database
+              run: |
+                php artisan migrate
+                
+            - name: Run Feature tests
+              run: php artisan test --testsuite=Feature
