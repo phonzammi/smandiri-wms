@@ -58,8 +58,32 @@
 {{-- Add common Javascript/Jquery code --}}
 @push('js')
     <script>
-        $(document).ready(function() {
-            // Add your common script logic here...
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            width: 'auto',
+            showConfirmButton: false,
+            showCloseButton: true,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        const SwalDialog = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-danger",
+                cancelButton: "btn btn-secondary"
+            },
+        });
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('toast-message', (event) => {
+                Toast.fire({
+                    icon: event.props.icon,
+                    text: event.props.text,
+                });
+            });
         });
     </script>
     <!-- Adds the Core Table Scripts -->
