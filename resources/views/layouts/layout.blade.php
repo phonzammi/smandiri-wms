@@ -15,6 +15,10 @@
 
 @push('css')
     @vite(['resources/js/app.js'])
+    <!-- Adds the Core Table Styles -->
+    @rappasoftTableStyles
+    <!-- Adds any relevant Third-Party Styles (Used for DateRangeFilter (Flatpickr) and NumberRangeFilter) -->
+    {{-- @rappasoftTableThirdPartyStyles --}}
 @endpush
 
 {{-- Extend and customize the page content header --}}
@@ -58,19 +62,8 @@
             // Add your common script logic here...
         });
     </script>
-@endpush
-
-{{-- Add common CSS customizations --}}
-@push('css')
-    <style type="text/css">
-        {{-- You can add AdminLTE customizations here --}}
-        /*
-                        .card-header {
-                            border-bottom: none;
-                        }
-                        .card-title {
-                            font-weight: 600;
-                        }
-                        */
-    </style>
+    <!-- Adds the Core Table Scripts -->
+    @rappasoftTableScripts
+    <!-- Adds any relevant Third-Party Scripts (e.g. Flatpickr) -->
+    {{-- @rappasoftTableThirdPartyScripts --}}
 @endpush
