@@ -322,7 +322,7 @@ return [
             'submenu' => [
                 [
                     'text' => 'Salesman',
-                    'url' => '#',
+                    'url' => '/sales',
                 ],
                 [
                     'text' => 'Toko',
