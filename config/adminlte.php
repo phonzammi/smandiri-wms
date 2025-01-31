@@ -334,7 +334,7 @@ return [
                 ],
                 [
                     'text' => 'Distributor',
-                    'url' => '#',
+                    'route' => 'distributors',
                 ],
             ],
         ],

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Livewire\Distributors\DistributorComponent;
 use App\Livewire\ItemUnits\ItemUnitComponent;
 use App\Livewire\Salesman\SalesmanComponent;
 use App\Livewire\Stores\StoreComponent;
@@ -17,6 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/sales', SalesmanComponent::class)->name('sales');
     Route::get('/toko', StoreComponent::class)->name('stores');
     Route::get('/satuan', ItemUnitComponent::class)->name('item-units');
+    Route::get('/distributor', DistributorComponent::class)->name('distributors');
 });
 
 

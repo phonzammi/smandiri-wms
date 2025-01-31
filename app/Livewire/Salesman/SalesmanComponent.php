@@ -31,7 +31,7 @@ class SalesmanComponent extends Component
     {
         $this->salesman = $salesman;
         $this->is_edit = true;
-        $this->form_title = "Edit Sales";
+        $this->form_title = "Edit Sales : $salesman->name";
         $this->name = $salesman->name;
         $this->phone = $salesman->phone;
         $this->address = $salesman->address;

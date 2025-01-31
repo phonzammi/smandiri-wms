@@ -31,7 +31,7 @@ class StoreComponent extends Component
     {
         $this->toko = $toko;
         $this->is_edit = true;
-        $this->form_title = "Edit Toko";
+        $this->form_title = "Edit Toko : $toko->name";
         $this->name = $toko->name;
         $this->phone = $toko->phone;
         $this->address = $toko->address;
