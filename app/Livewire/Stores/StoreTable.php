@@ -64,7 +64,6 @@ class StoreTable extends DataTableComponent
                             ];
                         }),
                 ]),
-
         ];
     }
 }

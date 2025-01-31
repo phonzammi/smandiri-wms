@@ -65,7 +65,6 @@ class SalesmenTable extends DataTableComponent
                             ];
                         }),
                 ]),
-
         ];
     }
 }

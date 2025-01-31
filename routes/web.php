@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Livewire\ItemUnits\ItemUnitComponent;
 use App\Livewire\Salesman\SalesmanComponent;
 use App\Livewire\Stores\StoreComponent;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,7 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
     Route::get('/sales', SalesmanComponent::class)->name('sales');
     Route::get('/toko', StoreComponent::class)->name('stores');
+    Route::get('/satuan', ItemUnitComponent::class)->name('item-units');
 });
 
 

@@ -330,7 +330,7 @@ return [
                 ],
                 [
                     'text' => 'Satuan Barang',
-                    'url' => '#',
+                    'route' => 'item-units',
                 ],
                 [
                     'text' => 'Distributor',
