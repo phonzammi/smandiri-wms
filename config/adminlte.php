@@ -322,11 +322,11 @@ return [
             'submenu' => [
                 [
                     'text' => 'Salesman',
-                    'url' => '/sales',
+                    'route' => 'sales',
                 ],
                 [
                     'text' => 'Toko',
-                    'url' => '#',
+                    'route' => 'stores',
                 ],
                 [
                     'text' => 'Satuan Barang',

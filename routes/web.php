@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Salesman\SalesmanComponent;
+use App\Livewire\Stores\StoreComponent;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -13,6 +14,7 @@ Route::middleware('auth')->group(function () {
         return view('dashboard');
     })->name('dashboard');
     Route::get('/sales', SalesmanComponent::class)->name('sales');
+    Route::get('/toko', StoreComponent::class)->name('stores');
 });
 
 
