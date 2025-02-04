@@ -15,6 +15,10 @@
 
 @push('css')
     @vite(['resources/js/app.js'])
+    <!-- Adds the Core Table Styles -->
+    @rappasoftTableStyles
+    <!-- Adds any relevant Third-Party Styles (Used for DateRangeFilter (Flatpickr) and NumberRangeFilter) -->
+    {{-- @rappasoftTableThirdPartyStyles --}}
 @endpush
 
 {{-- Extend and customize the page content header --}}
@@ -54,23 +58,36 @@
 {{-- Add common Javascript/Jquery code --}}
 @push('js')
     <script>
-        $(document).ready(function() {
-            // Add your common script logic here...
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            width: 'auto',
+            showConfirmButton: false,
+            showCloseButton: true,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        const SwalDialog = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-danger",
+                cancelButton: "btn btn-secondary"
+            },
+        });
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('toast-message', (event) => {
+                Toast.fire({
+                    icon: event.props.icon,
+                    text: event.props.text,
+                });
+            });
         });
     </script>
-@endpush
-
-{{-- Add common CSS customizations --}}
-@push('css')
-    <style type="text/css">
-        {{-- You can add AdminLTE customizations here --}}
-        /*
-                        .card-header {
-                            border-bottom: none;
-                        }
-                        .card-title {
-                            font-weight: 600;
-                        }
-                        */
-    </style>
+    <!-- Adds the Core Table Scripts -->
+    @rappasoftTableScripts
+    <!-- Adds any relevant Third-Party Scripts (e.g. Flatpickr) -->
+    {{-- @rappasoftTableThirdPartyScripts --}}
 @endpush
