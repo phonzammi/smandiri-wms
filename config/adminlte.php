@@ -343,8 +343,8 @@ return [
             'icon' => 'fas fa-fw fa-cubes',
             'submenu' => [
                 [
-                    'text' => 'Stock',
-                    'url' => '#',
+                    'text' => 'Stok Barang',
+                    'route' => 'items'
                 ],
                 [
                     'text' => 'Barang Masuk',
