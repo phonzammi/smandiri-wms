@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->decimal('total_money', 25, 0)->default(0);
             $table->boolean('is_completed')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
