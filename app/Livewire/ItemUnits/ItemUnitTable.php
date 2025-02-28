@@ -21,7 +21,8 @@ class ItemUnitTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make("No.", "id")->format(fn() => ++$this->index + ($this->getPage() - 1) * $this->getPerPage()),
+            Column::make("No.", "id")
+                ->format(fn() => ++$this->index + ($this->getPage() - 1) * $this->getPerPage()),
             Column::make("Nama Satuan", "name")
                 ->sortable(),
             ButtonGroupColumn::make('Aksi')

@@ -3,30 +3,41 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class IncomingTransaction extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
-        'invoice_number',
+        'invoice_code',
         'date',
         'courier',
-        'distributor_id',
+        'distributor',
+        'total_quantity',
         'total_money',
+        'is_completed'
     ];
 
-    public function distributor(): BelongsTo
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
     {
-        return $this->belongsTo(Distributor::class);
+        return [
+            'date' => 'date:Y-m-d',
+        ];
     }
 
     public function incoming_items(): BelongsToMany
     {
         return $this->belongsToMany(Item::class, 'incoming_transaction_item')
             ->withPivot([
-                'quantity',
+                'total_quantity',
                 'total_price'
-            ]);
+            ])->orderBy('name');
     }
 }

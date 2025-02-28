@@ -22,11 +22,16 @@ class SalesmenTable extends DataTableComponent
     {
         // $this->index = $this->getPage() > 1 ? ($this->getPage() - 1) * $this->perPage : 0;
         return [
-            Column::make("No.", "id")->format(fn() => ++$this->index + ($this->getPage() - 1) * $this->getPerPage()),
+            Column::make("No.", "id")
+                ->format(fn() => ++$this->index + ($this->getPage() - 1) * $this->getPerPage()),
             Column::make("Nama", "name")
-                ->sortable()->searchable(),
-            Column::make("No. Hp", "phone")->searchable(),
-            Column::make("Alamat", "address")->sortable()->searchable(),
+                ->sortable()
+                ->searchable(),
+            Column::make("No. Hp", "phone")
+                ->searchable(),
+            Column::make("Alamat", "address")
+                ->sortable()
+                ->searchable(),
             ButtonGroupColumn::make('Aksi')
                 ->attributes(function ($row) {
                     return [

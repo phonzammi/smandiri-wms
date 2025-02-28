@@ -12,12 +12,15 @@ return new class extends Migration {
     {
         Schema::create('incoming_transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('invoice_number');
+            $table->string('invoice_code', 50)->unique();
             $table->date('date');
-            $table->string('courier');
-            $table->foreignId('distributor_id')->constrained('distributors')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->decimal('total_money', 25, 0);
+            $table->string('courier', 50);
+            $table->string('distributor', 50);
+            $table->bigInteger('total_quantity')->default(0);
+            $table->decimal('total_money', 25, 0)->default(0);
+            $table->boolean('is_completed')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

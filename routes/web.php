@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Distributors\DistributorComponent;
+use App\Livewire\Items\IncomingTransactions\IncomingTransactionComponent;
+use App\Livewire\Items\IncomingTransactions\ShowIncomingTransaction;
 use App\Livewire\Items\ItemComponent;
 use App\Livewire\ItemUnits\ItemUnitComponent;
 use App\Livewire\Salesman\SalesmanComponent;
@@ -21,6 +23,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/satuan', ItemUnitComponent::class)->name('item-units');
     Route::get('/distributor', DistributorComponent::class)->name('distributors');
     Route::get('/barang', ItemComponent::class)->name('items');
+    Route::prefix("/barang-masuk")->group(function () {
+        Route::get('/', IncomingTransactionComponent::class)->name('incoming-transactions');
+        Route::get('/{incomingTransaction:invoice_code}/detail', ShowIncomingTransaction::class)->name('incoming-transactions.show');
+    });
 });
 
 
