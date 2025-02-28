@@ -20,13 +20,9 @@ class IncomingTransactionComponent extends Component
         $this->redirectRoute('incoming-transactions.show', ['incomingTransaction' => $newIncomingTransaction]);
     }
 
-    public function destroy(int $incoming_transaction_id)
+    public function destroy(IncomingTransaction $incomingTransaction)
     {
-        $incomingTransaction = IncomingTransaction::with([
-            'incoming_items' => function ($query) {
-                $query->select(['id', 'name', 'quantity']);
-            }
-        ])->find($incoming_transaction_id);
+        $incomingTransaction->loadMissing('incoming_items');
         if (!$incomingTransaction->is_completed) {
             foreach ($incomingTransaction->incoming_items as $incoming_item) {
                 $item = Item::find($incoming_item->id);

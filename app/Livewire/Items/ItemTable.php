@@ -26,9 +26,10 @@ class ItemTable extends DataTableComponent
             Column::make("Nama Barang", "name")->sortable()->searchable(),
             Column::make("Distributor", "distributor.name")->sortable()->searchable(),
             Column::make("Satuan", "itemUnit.name")->sortable()->searchable(),
-            Column::make("Harga", "price")->format(
-                fn($value) => "Rp. " . number_format($value, 0, ',', '.')
-            )->sortable()->searchable(),
+            Column::make("Harga", "price")
+                ->format(fn($value) => "Rp. " . number_format($value, 0, ',', '.'))
+                ->sortable()
+                ->searchable(),
             Column::make("Jumlah", "quantity")->sortable()->searchable(),
             ButtonGroupColumn::make('Aksi')
                 ->attributes(function ($row) {

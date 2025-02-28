@@ -43,12 +43,23 @@ class IncomingTransactionTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make("No.", "id")->format(fn() => ++$this->index + ($this->getPage() - 1) * $this->getPerPage()),
-            Column::make("Kode Invoice", "invoice_code")->sortable(),
-            Column::make("Jumlah", "total_quantity")->sortable()->searchable(),
-            Column::make("Kurir", "courier")->sortable()->searchable(),
-            Column::make("Distributor", "distributor")->sortable()->searchable(),
-            Column::make("Tanggal", "date")->sortable()->searchable()->format(fn($value) => $value->format('d F Y')),
+            Column::make("No.", "id")
+                ->format(fn() => ++$this->index + ($this->getPage() - 1) * $this->getPerPage()),
+            Column::make("Kode Invoice", "invoice_code")
+                ->sortable(),
+            Column::make("Jumlah", "total_quantity")
+                ->sortable()
+                ->searchable(),
+            Column::make("Kurir", "courier")
+                ->sortable()
+                ->searchable(),
+            Column::make("Distributor", "distributor")
+                ->sortable()
+                ->searchable(),
+            Column::make("Tanggal", "date")
+                ->sortable()
+                ->searchable()
+                ->format(fn($value) => $value->format('d F Y')),
             Column::make("Selesai", "is_completed")
                 ->sortable()
                 ->format(fn($value) => $value ? '<span class="badge badge-success text-xs">Selesai</span>' : '<span class="badge badge-warning text-xs">Belum Selesai</span>')->html(),

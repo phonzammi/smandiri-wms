@@ -68,7 +68,7 @@ class ShowIncomingTransaction extends Component
         }
     }
 
-    public function destroy(int $item_id)
+    public function destroy(Item $item)
     {
         if ($this->incomingTransaction->is_completed) {
             $this->dispatch('toast-message', props: [
@@ -77,10 +77,9 @@ class ShowIncomingTransaction extends Component
             ]);
             return;
         }
-        $item = Item::find($item_id);
-        $incoming_item = $this->incomingTransaction->incoming_items->find($item_id);
+        $incoming_item = $this->incomingTransaction->incoming_items->find($item->id);
 
-        if ($incoming_item && $this->incomingTransaction->incoming_items()->detach($item_id)) {
+        if ($incoming_item && $this->incomingTransaction->incoming_items()->detach($item->id)) {
             $item->quantity -= $incoming_item->pivot->total_quantity;
             $item->save();
             $this->syncTotals();
