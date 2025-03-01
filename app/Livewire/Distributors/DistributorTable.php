@@ -29,6 +29,11 @@ class DistributorTable extends DataTableComponent
                 ->attributes(function ($row) {
                     return [
                         'class' => 'mx-auto',
+                        'x-data' => '{ config: { 
+                            icon: `warning`,
+                            confirmButtonText: `Hapus !`,
+                            customClass: { confirmButton: `btn btn-danger`},
+                        }}'
                     ];
                 })
                 ->buttons([
@@ -51,10 +56,6 @@ class DistributorTable extends DataTableComponent
                                 'class' => 'btn btn-xs btn-danger',
                                 'x-on:click.prevent' => 'SwalDialog.fire({
                                         title: `Apakah Anda yakin ingin menghapus distributor ' . $row->name . '?`,
-                                        icon: `warning`,
-                                        showCancelButton: true,
-                                        confirmButtonText: `Hapus!`,
-                                        cancelButtonText: `Batal`,
                                     }).then((result) => {
                                         if (result.isConfirmed) {
                                             $wire.$parent.destroy(' . $row->id . ')
