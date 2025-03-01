@@ -63,9 +63,6 @@
                         x-on:click.prevent="SwalDialog.fire({
                             title: `Apakah Anda yakin ?`,
                             icon: `info`,
-                            showCancelButton: true,
-                            confirmButtonText: `Ya !`,
-                            cancelButtonText: `Batal`,
                             customClass: {
                                 confirmButton: 'btn btn-success',
                                 cancelButton: 'btn btn-danger'
@@ -116,17 +113,7 @@
                                 @if (!$incomingTransaction->is_completed)
                                     <td>
                                         <a href="" class="btn btn-xs btn-danger"
-                                            x-on:click.prevent="SwalDialog.fire({
-                                                title: `Apakah Anda yakin ingin menghapus Barang {{ $incoming_item->name }}?`,
-                                                icon: `warning`,
-                                                showCancelButton: true,
-                                                confirmButtonText: `Hapus!`,
-                                                cancelButtonText: `Batal`,
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    $wire.destroy({{ $incoming_item->id }});
-                                                }
-                                            });">
+                                            x-on:click.prevent="$deleteItem({{ $incoming_item->id }}, '{{ $incoming_item->name }}')">
                                             {{ __('Delete') }}
                                         </a>
                                     </td>
@@ -262,10 +249,25 @@
         </div>
     </div>
 </div>
+
 @script
     <script>
         $wire.on('close-modal', (event) => {
             $('#distributor_id').val(null).trigger('change');
         });
+        Alpine.magic('deleteItem', () => {
+            return (id, name) => SwalDialog.fire({
+                title: `Apakah Anda yakin ingin menghapus Barang ${name} ?`,
+                icon: `warning`,
+                confirmButtonText: `Hapus !`,
+                customClass: {
+                    confirmButton: `btn btn-danger`
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.destroy(id)
+                }
+            })
+        })
     </script>
 @endscript

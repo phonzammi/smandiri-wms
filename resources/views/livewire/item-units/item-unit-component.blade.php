@@ -73,3 +73,22 @@
         </div>
     </div>
 </div>
+
+@script
+    <script>
+        Alpine.magic('deleteItemUnit', () => {
+            return (id, name) => SwalDialog.fire({
+                title: `Apakah Anda yakin ingin menghapus satuan ${name} ?`,
+                icon: `warning`,
+                confirmButtonText: `Hapus !`,
+                customClass: {
+                    confirmButton: `btn btn-danger`
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.destroy(id)
+                }
+            })
+        })
+    </script>
+@endscript

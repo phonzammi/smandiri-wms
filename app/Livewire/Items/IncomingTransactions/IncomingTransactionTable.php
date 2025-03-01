@@ -67,11 +67,6 @@ class IncomingTransactionTable extends DataTableComponent
                 ->attributes(function ($row) {
                     return [
                         'class' => 'mx-auto',
-                        'x-data' => '{ config: { 
-                            icon: `warning`,
-                            confirmButtonText: `Hapus !`,
-                            customClass: { confirmButton: `btn btn-danger`},
-                        }}'
                     ];
                 })
                 ->buttons([
@@ -87,18 +82,9 @@ class IncomingTransactionTable extends DataTableComponent
                         ->title(fn($row) => 'Hapus')
                         ->location(fn($row) => '')
                         ->attributes(function ($row) {
-                            $warning = $row->is_completed ? "" : "<p class='text-danger'>Transaksi belum selesai. Jumlah seluruh barang akan dikembalikan ke nilai awal!</p>";
                             return [
                                 'class' => 'btn btn-xs btn-danger',
-                                'x-on:click.prevent' => 'SwalDialog.fire({
-                                        title: `Apakah Anda yakin ingin menghapus Transaksi ' . $row->invoice_code . '?`,
-                                        html: `' . $warning . '`,
-                                        ...config
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            $wire.$parent.destroy(' . $row->id . ')
-                                        }
-                                    });'
+                                'x-on:click.prevent' => '$deleteTransaction(' . $row->id . ', `' . $row->invoice_code . '`, ' . $row->is_completed . ')'
                             ];
                         }),
                 ]),
