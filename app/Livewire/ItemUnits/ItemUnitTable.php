@@ -29,11 +29,6 @@ class ItemUnitTable extends DataTableComponent
                 ->attributes(function ($row) {
                     return [
                         'class' => 'mx-auto',
-                        'x-data' => '{ config: { 
-                            icon: `warning`,
-                            confirmButtonText: `Hapus !`,
-                            customClass: { confirmButton: `btn btn-danger`},
-                        }}'
                     ];
                 })
                 ->buttons([
@@ -54,14 +49,7 @@ class ItemUnitTable extends DataTableComponent
                         ->attributes(function ($row) {
                             return [
                                 'class' => 'btn btn-xs btn-danger',
-                                'x-on:click.prevent' => 'SwalDialog.fire({
-                                        title: `Apakah Anda yakin ingin menghapus satuan ' . $row->name . '?`,
-                                        ...config
-                                    }).then((result) => {
-                                        if (result.isConfirmed) {
-                                            $wire.$parent.destroy(' . $row->id . ')
-                                        }
-                                    });'
+                                'x-on:click.prevent' => '$deleteItemUnit(' . $row->id . ', `' . $row->name . '`)'
                             ];
                         }),
                 ]),

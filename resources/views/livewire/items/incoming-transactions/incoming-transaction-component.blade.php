@@ -75,3 +75,25 @@
         </div>
     </div>
 </div>
+
+@script
+    <script>
+        Alpine.magic('deleteTransaction', () => {
+            return (id, invoice_code, is_completed) => SwalDialog.fire({
+                title: `Apakah Anda yakin ingin menghapus transaksi ${invoice_code} ?`,
+                html: !is_completed ?
+                    "<p class='text-danger'>Transaksi belum selesai. Jumlah seluruh barang akan dikembalikan ke nilai awal!</p>" :
+                    "",
+                icon: `warning`,
+                confirmButtonText: `Hapus !`,
+                customClass: {
+                    confirmButton: `btn btn-danger`
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.destroy(id)
+                }
+            })
+        })
+    </script>
+@endscript
