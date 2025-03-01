@@ -67,6 +67,11 @@ class IncomingTransactionTable extends DataTableComponent
                 ->attributes(function ($row) {
                     return [
                         'class' => 'mx-auto',
+                        'x-data' => '{ config: { 
+                            icon: `warning`,
+                            confirmButtonText: `Hapus !`,
+                            customClass: { confirmButton: `btn btn-danger`},
+                        }}'
                     ];
                 })
                 ->buttons([
@@ -88,10 +93,7 @@ class IncomingTransactionTable extends DataTableComponent
                                 'x-on:click.prevent' => 'SwalDialog.fire({
                                         title: `Apakah Anda yakin ingin menghapus Transaksi ' . $row->invoice_code . '?`,
                                         html: `' . $warning . '`,
-                                        icon: `warning`,
-                                        showCancelButton: true,
-                                        confirmButtonText: `Hapus!`,
-                                        cancelButtonText: `Batal`,
+                                        ...config
                                     }).then((result) => {
                                         if (result.isConfirmed) {
                                             $wire.$parent.destroy(' . $row->id . ')

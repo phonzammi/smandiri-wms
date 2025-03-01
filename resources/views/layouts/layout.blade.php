@@ -45,13 +45,11 @@
 {{-- Create a common footer --}}
 @section('footer')
     <div class="float-right">
-        Version: {{ config('app.version', '1.0.0') }}
+        Version: 1.0.0
     </div>
 
     <strong>
-        <a href="{{ config('app.company_url', '#') }}">
-            Sistem Gudang Sukses Mandiri
-        </a>
+        <a href="#">Sistem Gudang Sukses Mandiri</a>
     </strong>
 @stop
 
@@ -72,10 +70,9 @@
             }
         });
         const SwalDialog = Swal.mixin({
-            customClass: {
-                confirmButton: "btn btn-danger",
-                cancelButton: "btn btn-secondary"
-            },
+            showCancelButton: true,
+            confirmButtonText: "Ya !",
+            cancelButtonText: "Batal",
         });
         document.addEventListener('livewire:init', () => {
             Livewire.on('toast-message', (event) => {
