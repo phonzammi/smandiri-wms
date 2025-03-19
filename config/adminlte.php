@@ -352,7 +352,7 @@ return [
                 ],
                 [
                     'text' => 'Barang Keluar',
-                    'url' => '#',
+                    'route' => 'outgoing-transactions',
                 ],
             ]
         ],
