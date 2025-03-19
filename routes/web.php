@@ -6,6 +6,7 @@ use App\Livewire\Items\IncomingTransactions\IncomingTransactionComponent;
 use App\Livewire\Items\IncomingTransactions\ShowIncomingTransaction;
 use App\Livewire\Items\ItemComponent;
 use App\Livewire\Items\OutgoingTransactions\OutgoingTransactionComponent;
+use App\Livewire\Items\OutgoingTransactions\ShowOutgoingTransaction;
 use App\Livewire\ItemUnits\ItemUnitComponent;
 use App\Livewire\Salesman\SalesmanComponent;
 use App\Livewire\Stores\StoreComponent;
