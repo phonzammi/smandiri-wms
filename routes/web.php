@@ -10,6 +10,7 @@ use App\Livewire\Items\OutgoingTransactions\ShowOutgoingTransaction;
 use App\Livewire\ItemUnits\ItemUnitComponent;
 use App\Livewire\Salesman\SalesmanComponent;
 use App\Livewire\Stores\StoreComponent;
+use App\Models\OutgoingTransaction;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,6 +33,24 @@ Route::middleware('auth')->group(function () {
     Route::prefix("/barang-keluar")->group(function () {
         Route::get('/', OutgoingTransactionComponent::class)->name('outgoing-transactions');
         Route::get('/{outgoingTransaction:invoice_code}/detail', ShowOutgoingTransaction::class)->name('outgoing-transactions.show');
+    });
+    Route::prefix("/bon")->group(function () {
+        Route::get('/{outgoingTransaction:invoice_code}/cetak-ori', function (OutgoingTransaction $outgoingTransaction) {
+            if ($outgoingTransaction->status->isDraft()) {
+                abort(403, "Pengisian transaksi belum selesai. Bon tidak dapat dicetak !");
+            }
+            $outgoingTransaction->loadMissing(['store', 'salesman', 'outgoing_items' => fn($query) => $query->with('itemUnit')]);
+
+            return view('bills.export-ori', compact('outgoingTransaction'));
+        })->name('bills.export-ori');
+        Route::get('/{outgoingTransaction:invoice_code}/cetak', function (OutgoingTransaction $outgoingTransaction) {
+            if ($outgoingTransaction->status->isDraft()) {
+                abort(403, "Pengisian transaksi belum selesai. Bon tidak dapat dicetak !");
+            }
+            $outgoingTransaction->loadMissing(['store', 'salesman', 'outgoing_items' => fn($query) => $query->with('itemUnit')]);
+
+            return view('bills.export', compact('outgoingTransaction'));
+        })->name('bills.export');
     });
 });
 

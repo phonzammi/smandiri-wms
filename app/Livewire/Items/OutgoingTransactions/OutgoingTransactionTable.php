@@ -48,6 +48,16 @@ class OutgoingTransactionTable extends DataTableComponent
                         ->title(fn($row) => 'Detail')
                         ->location(fn($row) => route('outgoing-transactions.show', $row->invoice_code))
                         ->attributes(fn($row) => ['class' => 'btn btn-xs btn-info']),
+                    LinkColumn::make('Cetak')
+                        ->title(fn($row) => 'Cetak')
+                        ->location(fn($row) => $row->status->isDraft() ? "#" : route('bills.export', $row->invoice_code))
+                        ->attributes(function ($row) {
+                            $disabled = $row->status->isDraft() ? "disabled d-none" : "";
+                            return [
+                                'class' => "btn btn-xs btn-success $disabled",
+                                'target' => '_blank'
+                            ];
+                        })
                 ]),
         ];
     }
