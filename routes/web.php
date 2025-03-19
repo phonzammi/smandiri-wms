@@ -5,6 +5,7 @@ use App\Livewire\Distributors\DistributorComponent;
 use App\Livewire\Items\IncomingTransactions\IncomingTransactionComponent;
 use App\Livewire\Items\IncomingTransactions\ShowIncomingTransaction;
 use App\Livewire\Items\ItemComponent;
+use App\Livewire\Items\OutgoingTransactions\OutgoingTransactionComponent;
 use App\Livewire\ItemUnits\ItemUnitComponent;
 use App\Livewire\Salesman\SalesmanComponent;
 use App\Livewire\Stores\StoreComponent;
@@ -26,6 +27,10 @@ Route::middleware('auth')->group(function () {
     Route::prefix("/barang-masuk")->group(function () {
         Route::get('/', IncomingTransactionComponent::class)->name('incoming-transactions');
         Route::get('/{incomingTransaction:invoice_code}/detail', ShowIncomingTransaction::class)->name('incoming-transactions.show');
+    });
+    Route::prefix("/barang-keluar")->group(function () {
+        Route::get('/', OutgoingTransactionComponent::class)->name('outgoing-transactions');
+        Route::get('/{outgoingTransaction:invoice_code}/detail', ShowOutgoingTransaction::class)->name('outgoing-transactions.show');
     });
 });
 
