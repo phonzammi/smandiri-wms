@@ -18,8 +18,9 @@ class ShowOutgoingTransaction extends Component
     public ?array $items = [];
     public ?Item $selectedItem = null;
     public int $selectedItemQuantity = 0;
-    public int $item_id, $quantity, $unit_price, $total_price, $total_net_price;
+    public int $quantity, $unit_price, $total_price, $total_net_price, $initial_items_count;
     public null|int $distributor_id = null;
+    public null|int $item_id = null;
     public int $discount = 0;
 
     public function mount()
@@ -27,6 +28,7 @@ class ShowOutgoingTransaction extends Component
         $this->outgoingTransaction->loadMissing(['outgoing_items', 'salesman', 'store']);
         $this->distributors = Distributor::select(["id", "name"])->get();
         $this->items = Item::select(["id", "distributor_id", "name"])->get()->toArray();
+        $this->initial_items_count = count($this->items);
     }
 
     public function store()
@@ -117,19 +119,21 @@ class ShowOutgoingTransaction extends Component
         ];
     }
 
-    public function updatedDistributorId()
+    public function updated($fields)
     {
         $this->resetValidation();
-        $this->items = Item::select(["id", "distributor_id", "name"])->when($this->distributor_id, function ($query) {
-            return $query->where("distributor_id", $this->distributor_id);
-        })->get()->toArray();
-        $this->dispatch('items-updated', items: $this->items);
-    }
-
-    public function updatedItemId()
-    {
-        $this->selectedItem = isset($this->item_id) && $this->item_id ? Item::select(['id', 'quantity', 'price'])->where('id', $this->item_id)->first() : null;
-        $this->selectedItemQuantity = $this->selectedItem?->quantity ?: 0;
+        if ($fields === 'distributor_id') {
+            $this->reset(['selectedItem']);
+            if (!$this->distributor_id && ($this->initial_items_count === count($this->items))) {
+                return;
+            }
+            $this->items = Item::select(["id", "distributor_id", "name"])->when($this->distributor_id, fn($query) => $query->where("distributor_id", $this->distributor_id))->get()->toArray();
+            $this->dispatch('items-updated', items: $this->items);
+        }
+        if ($fields === 'item_id') {
+            $this->selectedItem = $this->item_id ? Item::select(['id', 'quantity', 'price'])->where('id', $this->item_id)->first() : null;
+            $this->selectedItemQuantity = $this->selectedItem?->quantity ?: 0;
+        }
         $this->dispatch('selectedItem-updated', value: $this->selectedItem?->toJson());
     }
 

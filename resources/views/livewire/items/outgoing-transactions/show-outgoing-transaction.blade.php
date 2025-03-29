@@ -18,7 +18,7 @@
                     </button>
                 @else
                     <a href="{{ route('bills.export', $outgoingTransaction->invoice_code) }}"
-                        class="btn btn-sm btn-success">
+                        class="btn btn-sm btn-success" target="_blank">
                         <i class="mr-1 fas fa-print"></i>Cetak Bon
                     </a>
                 @endif
@@ -212,6 +212,7 @@
                                         placeholder: "Pilih Distributor ...",
                                     });
                                     $($el).on("change", function(e) {
+                                        $("#item_id").val(null).trigger("change");
                                         $wire.set("distributor_id", e.target.value);
                                     });'>
                                     <option value=""></option>
@@ -226,7 +227,7 @@
                             <label for="item_id">Barang</label>
                             <div class="input-group">
                                 <select id="item_id" name="item_id" class="form-control" style="width: 100%"
-                                    wire:key='{{ $distributor_id }}' wire:model='item_id'
+                                    wire:key='{{ $distributor_id }}' wire:model.live='item_id'
                                     x-init='$wire.on("items-updated", (event) => {
                                         items = event.items;
                                         if($wire.item_id){
