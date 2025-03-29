@@ -27,11 +27,11 @@
     </style>
 </head>
 
-<body style='width: 700px; font-family: tahoma; font-size: 12pt;' class="mx-auto">
+<body style='width: 1056px; font-family: tahoma; font-size: 12pt;' class="mx-auto">
     @foreach ($outgoingTransaction->outgoing_items->chunk(15) as $chunk)
         <div class="page">
             <div class="row my-2" style="font-size: 12pt; font-family: calibri;">
-                <div class="col-7">
+                <div class="col-8">
                     <span class="d-block"><b>UD. Sukses Mandiri</b></span>
                     <span style="font-size: 11.5pt;">
                         Jln. Medan - Banda Aceh Meunasah Mesjid Cunda - Kota Lhokseumawe, Telp : 0822-7216-3053
@@ -49,7 +49,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-5">
+                <div class="col-4">
                     <span class="d-block"><b>FAKTUR PENJUALAN</b></span>
                     <table class="w-100" border="0">
                         <tbody>
