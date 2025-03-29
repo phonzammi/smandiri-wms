@@ -174,7 +174,7 @@
                 </div>
                 <div class="modal-body">
                     <form wire:submit.prevent='store'
-                        x-data='{ config: {allowClear: true,dropdownParent: $("#outgoing-item-modal"),theme: "bootstrap4"}, items: [], selectedItem: null, disabled:true }'>
+                        x-data='{ config: {allowClear: true,dropdownParent: $("#outgoing-item-modal"),theme: "bootstrap4"}, items: $wire.items, selectedItem: null, disabled:true }'>
                         @csrf
                         @if ($errors->any())
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
