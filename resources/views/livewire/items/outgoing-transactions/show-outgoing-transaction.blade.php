@@ -10,6 +10,19 @@
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title m-1">Detail Transaksi</h3>
+            <div class="card-tools">
+                @if ($outgoingTransaction->status->isDraft())
+                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
+                        data-target="#edit-transaction-modal">
+                        <i class="mr-1 fas fa-edit"></i>Edit Transaksi
+                    </button>
+                @else
+                    <a href="{{ route('bills.export', $outgoingTransaction->invoice_code) }}"
+                        class="btn btn-sm btn-success">
+                        <i class="mr-1 fas fa-print"></i>Cetak Bon
+                    </a>
+                @endif
+            </div>
         </div>
         <div class="card-body">
             @if (session('status'))
@@ -24,41 +37,45 @@
                 <table class="table table-borderless text-nowrap">
                     <tbody class="font-weight-bold">
                         <tr>
-                            <th scope="row" class="w-25">Tanggal Transaksi</th>
+                            <th scope="row" style="width:20%;">Tanggal Transaksi</th>
                             <td>: {{ $outgoingTransaction->date->format('d F Y') }}</td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Kode Invoice</th>
+                            <th scope="row" style="width:20%;">Kode Invoice</th>
                             <td>: {{ $outgoingTransaction->invoice_code }}</td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Toko</th>
+                            <th scope="row" style="width:20%;">Toko</th>
                             <td>: {{ $outgoingTransaction->store->name }}</td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Sales</th>
+                            <th scope="row" style="width:20%;">Sales</th>
                             <td>: {{ $outgoingTransaction->salesman->name }}</td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Total Transaksi</th>
+                            <th scope="row" style="width:20%;">Total Transaksi</th>
                             <td>: Rp.
                                 {{ number_format($outgoingTransaction->outgoing_items->sum('pivot.total_price'), 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Diskon</th>
+                            <th scope="row" style="width:20%;">Diskon</th>
                             <td>: Rp.
                                 {{ number_format($outgoingTransaction->outgoing_items->sum('pivot.discount'), 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Total Transaksi</th>
+                            <th scope="row" style="width:20%;">NETT</th>
                             <td>: Rp.
                                 {{ number_format($outgoingTransaction->outgoing_items->sum('pivot.total_net_price'), 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Status</th>
+                            <th scope="row" style="width:20%;">Pembayaran</th>
+                            <td>: {{ $outgoingTransaction->payment_method->name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" style="width:20%;">Status</th>
                             <td>: {!! $outgoingTransaction->status->getLabelBadge() !!}</td>
                         </tr>
                     </tbody>
@@ -135,7 +152,7 @@
                                     <div class="d-flex flex-nowrap justify-content-between font-weight-bold">
                                         <span>Rp. </span>
                                         <span>
-                                            {{ number_format($outgoing_item->pivot->total_net_price, 0, ',', '.') }}
+                                            {{ number_format($outgoing_item->pivot->total_price, 0, ',', '.') }}
                                         </span>
                                     </div>
                                 </td>
@@ -170,7 +187,7 @@
                 </div>
                 <div class="modal-body">
                     <form wire:submit.prevent='store'
-                        x-data='{ config: {allowClear: true,dropdownParent: $("#outgoing-item-modal"),theme: "bootstrap4"}, items: [], selectedItem: null, disabled:true }'>
+                        x-data='{ config: {allowClear: true,dropdownParent: $("#outgoing-item-modal"),theme: "bootstrap4"}, items: $wire.items, selectedItem: null, disabled:true }'>
                         @csrf
                         @if ($errors->any())
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">

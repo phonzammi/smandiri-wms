@@ -18,13 +18,15 @@ class ShowOutgoingTransaction extends Component
     public ?array $items = [];
     public ?Item $selectedItem = null;
     public int $selectedItemQuantity = 0;
-    public int $distributor_id, $item_id, $quantity, $unit_price, $total_price, $total_net_price;
+    public int $item_id, $quantity, $unit_price, $total_price, $total_net_price;
+    public null|int $distributor_id = null;
     public int $discount = 0;
 
     public function mount()
     {
         $this->outgoingTransaction->loadMissing(['outgoing_items', 'salesman', 'store']);
         $this->distributors = Distributor::select(["id", "name"])->get();
+        $this->items = Item::select(["id", "distributor_id", "name"])->get()->toArray();
     }
 
     public function store()
@@ -93,7 +95,7 @@ class ShowOutgoingTransaction extends Component
     public function rules()
     {
         return [
-            'distributor_id' => ['required', 'integer', 'exists:distributors,id'],
+            'distributor_id' => ['nullable', 'integer', 'exists:distributors,id'],
             'item_id' => [
                 'required',
                 'integer',
@@ -118,7 +120,9 @@ class ShowOutgoingTransaction extends Component
     public function updatedDistributorId()
     {
         $this->resetValidation();
-        $this->items = isset($this->distributor_id) && $this->distributor_id ? Item::select(["id", "distributor_id", "name"])->where("distributor_id", $this->distributor_id)->get()?->toArray() : [];
+        $this->items = Item::select(["id", "distributor_id", "name"])->when($this->distributor_id, function ($query) {
+            return $query->where("distributor_id", $this->distributor_id);
+        })->get()->toArray();
         $this->dispatch('items-updated', items: $this->items);
     }
 
