@@ -42,7 +42,7 @@
                             placeholder="Di Generate Otomatis Oleh Sistem ..." autocomplete="invoice_code" readonly />
                         <x-adminlte-input name="date" type="date" label="Tanggal Keluar"
                             placeholder="Tanggal Keluar ..." wire:model='date' autocomplete="date" />
-                        <x-adminlte-select label="Sales" name="salesman_id" wire:model="salesman_id">
+                        <x-adminlte-select label="Sales" name="salesman_id" wire:model="salesman_id" required>
                             <option value="" class="text-muted">Pilih Sales ...</option>
                             @foreach ($salesmen as $salesman)
                                 <option value="{{ $salesman->id }}">{{ $salesman->name }}</option>
@@ -75,6 +75,14 @@
                                 <strong>{{ $message }}</strong>
                             </span>
                         @enderror
+
+                        <x-adminlte-select label="Pembayaran" id="payment_method" name="payment_method"
+                            wire:model="payment_method" required>
+                            <option value="" class="text-muted">Pembayaran ...</option>
+                            @foreach ($payment_methods as $key => $payment_method)
+                                <option value="{{ $key }}">{{ $payment_method }}</option>
+                            @endforeach
+                        </x-adminlte-select>
                         <div>
                             <button class="btn btn-warning" type="button" disabled wire:loading wire:target="store">
                                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

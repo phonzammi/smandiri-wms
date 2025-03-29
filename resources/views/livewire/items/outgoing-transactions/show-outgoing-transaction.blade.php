@@ -24,41 +24,45 @@
                 <table class="table table-borderless text-nowrap">
                     <tbody class="font-weight-bold">
                         <tr>
-                            <th scope="row" class="w-25">Tanggal Transaksi</th>
+                            <th scope="row" style="width:20%;">Tanggal Transaksi</th>
                             <td>: {{ $outgoingTransaction->date->format('d F Y') }}</td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Kode Invoice</th>
+                            <th scope="row" style="width:20%;">Kode Invoice</th>
                             <td>: {{ $outgoingTransaction->invoice_code }}</td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Toko</th>
+                            <th scope="row" style="width:20%;">Toko</th>
                             <td>: {{ $outgoingTransaction->store->name }}</td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Sales</th>
+                            <th scope="row" style="width:20%;">Sales</th>
                             <td>: {{ $outgoingTransaction->salesman->name }}</td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Total Transaksi</th>
+                            <th scope="row" style="width:20%;">Total Transaksi</th>
                             <td>: Rp.
                                 {{ number_format($outgoingTransaction->outgoing_items->sum('pivot.total_price'), 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Diskon</th>
+                            <th scope="row" style="width:20%;">Diskon</th>
                             <td>: Rp.
                                 {{ number_format($outgoingTransaction->outgoing_items->sum('pivot.discount'), 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Total Transaksi</th>
+                            <th scope="row" style="width:20%;">NETT</th>
                             <td>: Rp.
                                 {{ number_format($outgoingTransaction->outgoing_items->sum('pivot.total_net_price'), 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>
-                            <th scope="row" class="w-25">Status</th>
+                            <th scope="row" style="width:20%;">Pembayaran</th>
+                            <td>: {{ $outgoingTransaction->payment_method->name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row" style="width:20%;">Status</th>
                             <td>: {!! $outgoingTransaction->status->getLabelBadge() !!}</td>
                         </tr>
                     </tbody>

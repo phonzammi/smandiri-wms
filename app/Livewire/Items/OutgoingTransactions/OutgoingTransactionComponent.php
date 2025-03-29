@@ -2,15 +2,18 @@
 
 namespace App\Livewire\Items\OutgoingTransactions;
 
+use App\Enums\PaymentMethod;
 use App\Models\OutgoingTransaction;
 use App\Models\Salesman;
 use App\Models\Store;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Illuminate\Validation\Rule;
 
 class OutgoingTransactionComponent extends Component
 {
-    public string $invoice_code, $date = "";
+    public string $invoice_code, $date, $payment_method = "";
     public ?int $salesman_id, $store_id = null;
     public bool $hasStoreIdError = false;
 
@@ -49,6 +52,10 @@ class OutgoingTransactionComponent extends Component
             'date' => ['required', 'date'],
             'salesman_id' => ['required', 'integer', 'exists:salesmen,id'],
             'store_id' => ['required', 'integer', 'exists:stores,id'],
+            'payment_method' => [
+                'required',
+                Rule::enum(PaymentMethod::class)
+            ]
         ];
     }
 
@@ -58,6 +65,7 @@ class OutgoingTransactionComponent extends Component
             "salesman_id" => "Sales",
             "date" => "Tanggal Keluar",
             "store_id" => "Toko",
+            "payment_method" => "Pembayaran"
         ];
     }
 
@@ -65,6 +73,13 @@ class OutgoingTransactionComponent extends Component
     {
         $salesmen = Salesman::all();
         $stores = Store::all();
-        return view('livewire.items.outgoing-transactions.outgoing-transaction-component', compact(['salesmen', 'stores']));
+        $payment_methods = Collection::make(PaymentMethod::cases())->mapWithKeys(function (object $item) {
+            return [$item->value => $item->getLabelText()];
+        })->all();
+
+        return view(
+            'livewire.items.outgoing-transactions.outgoing-transaction-component',
+            compact(['salesmen', 'stores', 'payment_methods'])
+        );
     }
 }

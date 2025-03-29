@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OutgoingTransactionStatus;
+use App\Enums\PaymentMethod;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,6 +22,7 @@ class OutgoingTransaction extends Model
         'prices',
         'discounts',
         'net_prices',
+        'payment_method',
         'status',
         'cancel_reason'
     ];
@@ -34,6 +36,7 @@ class OutgoingTransaction extends Model
     {
         return [
             'date' => 'date:Y-m-d',
+            'payment_method' => PaymentMethod::class,
             'status' => OutgoingTransactionStatus::class
         ];
     }
