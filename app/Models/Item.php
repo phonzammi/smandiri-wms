@@ -31,15 +31,6 @@ class Item extends Model
         return $this->belongsTo(ItemUnit::class);
     }
 
-    public function incoming_items(): BelongsToMany
-    {
-        return $this->belongsToMany(IncomingTransaction::class, 'incoming_transaction_item')
-            ->withPivot([
-                'quantity',
-                'total_price'
-            ]);
-    }
-
     protected static function boot()
     {
         parent::boot();
