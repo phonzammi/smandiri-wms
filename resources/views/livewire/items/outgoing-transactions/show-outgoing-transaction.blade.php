@@ -10,6 +10,19 @@
     <div class="card card-primary">
         <div class="card-header">
             <h3 class="card-title m-1">Detail Transaksi</h3>
+            <div class="card-tools">
+                @if ($outgoingTransaction->status->isDraft())
+                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
+                        data-target="#edit-transaction-modal">
+                        <i class="mr-1 fas fa-edit"></i>Edit Transaksi
+                    </button>
+                @else
+                    <a href="{{ route('bills.export', $outgoingTransaction->invoice_code) }}"
+                        class="btn btn-sm btn-success">
+                        <i class="mr-1 fas fa-print"></i>Cetak Bon
+                    </a>
+                @endif
+            </div>
         </div>
         <div class="card-body">
             @if (session('status'))
@@ -139,7 +152,7 @@
                                     <div class="d-flex flex-nowrap justify-content-between font-weight-bold">
                                         <span>Rp. </span>
                                         <span>
-                                            {{ number_format($outgoing_item->pivot->total_net_price, 0, ',', '.') }}
+                                            {{ number_format($outgoing_item->pivot->total_price, 0, ',', '.') }}
                                         </span>
                                     </div>
                                 </td>
