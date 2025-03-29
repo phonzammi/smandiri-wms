@@ -59,34 +59,25 @@ class IncomingTransactionTable extends DataTableComponent
             Column::make("Tanggal", "date")
                 ->sortable()
                 ->searchable()
-                ->format(fn($value) => $value->format('d F Y')),
+                ->format(fn($value) => $value->isoFormat('DD MMMM Y')),
             Column::make("Selesai", "is_completed")
                 ->sortable()
-                ->format(fn($value) => $value ? '<span class="badge badge-success text-xs">Selesai</span>' : '<span class="badge badge-warning text-xs">Belum Selesai</span>')->html(),
+                ->format(fn($value) => $value ? '<span class="badge badge-success text-xs">Selesai</span>' : '<span class="badge badge-warning text-xs">Belum Selesai</span>')
+                ->html(),
             ButtonGroupColumn::make('Aksi')
-                ->attributes(function ($row) {
-                    return [
-                        'class' => 'mx-auto',
-                    ];
-                })
+                ->attributes(fn($row) => ['class' => 'mx-auto'])
                 ->buttons([
                     LinkColumn::make('Detail')
                         ->title(fn($row) => 'Detail')
                         ->location(fn($row) => route('incoming-transactions.show', $row->invoice_code))
-                        ->attributes(function ($row) {
-                            return [
-                                'class' => 'btn btn-xs btn-info',
-                            ];
-                        }),
+                        ->attributes(fn($row) => ['class' => 'btn btn-xs btn-info']),
                     LinkColumn::make('Hapus')
                         ->title(fn($row) => 'Hapus')
                         ->location(fn($row) => '')
-                        ->attributes(function ($row) {
-                            return [
-                                'class' => 'btn btn-xs btn-danger',
-                                'x-on:click.prevent' => '$deleteTransaction(' . $row->id . ', `' . $row->invoice_code . '`, ' . $row->is_completed . ')'
-                            ];
-                        }),
+                        ->attributes(fn($row) => [
+                            'class' => 'btn btn-xs btn-danger',
+                            'x-on:click.prevent' => '$deleteTransaction(' . $row->id . ', `' . $row->invoice_code . '`, ' . $row->is_completed . ')'
+                        ]),
                 ]),
         ];
     }
