@@ -42,7 +42,7 @@
                         <tr>
                             <th scope="row" class="w-25">Total Transaksi</th>
                             <td>: Rp.
-                                {{ number_format($incomingTransaction->incoming_items->sum('pivot.total_price'), 0, ',', '.') }}
+                                {{ number_format($incomingTransaction->total_money, 0, ',', '.') }}
                             </td>
                         </tr>
                     </tbody>
@@ -63,9 +63,9 @@
                         x-on:click.prevent="SwalDialog.fire({
                             title: `Apakah Anda yakin ?`,
                             icon: `info`,
+                            html: `<p class='text-info'>Harap pastikan data transaksi sudah lengkap dan sesuai. Setelah proses ini, data transaksi tidak dapat diubah!</p>`,
                             customClass: {
-                                confirmButton: 'btn btn-success',
-                                cancelButton: 'btn btn-danger'
+                                confirmButton: 'bg-success',
                             },
                         }).then((result) => {
                             if (result.isConfirmed) {
@@ -103,7 +103,7 @@
                                         {{ number_format($incoming_item->price, 0, ',', '.') }}
                                     </div>
                                 </td>
-                                <td class="text-right">{{ $incoming_item->pivot->total_quantity }}</td>
+                                <td class="text-right">{{ $incoming_item->pivot->quantity }}</td>
                                 <td class="d-flex flex-nowrap justify-content-between font-weight-bold">
                                     <div>Rp. </div>
                                     <div>
@@ -136,8 +136,7 @@
     </div>
 
     {{-- Modal Form --}}
-    <div class="modal fade" id="incoming-item-modal" wire:ignore.self data-backdrop="static" data-keyboard="false"
-        x-on:incoming-item-ok.window="$('#incoming-item-modal').modal('hide')">
+    <div class="modal fade" id="incoming-item-modal" wire:ignore.self data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -145,7 +144,7 @@
                         Tambah Barang Masuk
                     </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                        wire:click="$dispatch('close-modal')">
+                        wire:click="$dispatch('close-modal');">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
@@ -155,7 +154,7 @@
                         <span class="alert alert-danger text-sm">{{ $message }}</span>
                     @enderror
                     <form wire:submit.prevent='store'
-                        x-data='{ config: {allowClear: true,dropdownParent: $("#incoming-item-modal"),theme: "bootstrap4"}}'>
+                        x-data='{ config: {allowClear: true,dropdownParent: $("#incoming-item-modal"),theme: "bootstrap4"}, items: $wire.items}'>
                         @csrf
                         @if ($errors->any())
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -174,13 +173,15 @@
                             <label for="distributor_id">Distributor</label>
                             <div class="input-group">
                                 <select id="distributor_id" name="distributor_id" wire:model.live='distributor_id'
-                                    class="form-control" style="width: 100%" x-init="$($el).select2({
-                                        placeholder: 'Pilih Distributor ...',
+                                    class="form-control" style="width: 100%"
+                                    x-init='$($el).select2({
+                                        placeholder: "Pilih Distributor ...",
                                         ...config
                                     });
-                                    $($el).on('change', function(e) {
-                                        $wire.$set('distributor_id', e.target.value)
-                                    })">
+                                    $($el).on("change", function(e) {
+                                        $("#item_id").val(null).trigger("change");
+                                        $wire.set("distributor_id", e.target.value);
+                                    });'>
                                     <option value=""></option>
                                     @foreach ($distributors as $distributor)
                                         <option value="{{ $distributor->id }}">{{ $distributor->name }}</option>
@@ -189,34 +190,40 @@
                             </div>
                         </div>
 
-                        @if ($items)
-                            <div class="form-group" wire:ignore>
-                                <label for="item_id">Barang</label>
-                                <div class="input-group">
-                                    <select id="item_id" name="item_id" class="form-control" style="width: 100%"
-                                        x-init="$($el).select2({
-                                            placeholder: 'Pilih Barang ...',
-                                            ...config
-                                        });
-                                        $($el).on('change', function(e) {
-                                            $wire.$set('item_id', e.target.value)
-                                        })" wire:key='{{ $distributor_id }}'>
-                                        <option value="">Pilih Barang ...</option>
-                                        @foreach ($items as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                        <div class="form-group" wire:ignore>
+                            <label for="item_id">Barang</label>
+                            <div class="input-group">
+                                <select id="item_id" name="item_id" class="form-control" style="width: 100%"
+                                    wire:key='{{ $distributor_id }}' wire:model.live='item_id'
+                                    x-init='$wire.on("items-updated", (event) => {
+                                        items = event.items;
+                                        if($wire.item_id){
+                                            $($el).val(null).trigger("change");
+                                        }
+                                    });
+                                    $($el).select2({
+                                        placeholder: "Pilih Barang ...",
+                                        ...config
+                                    });
+                                    $($el).on("change", function(e) {
+                                        $wire.$set("item_id", e.target.value)
+                                    })'>
+                                    <option value="">Pilih Barang ...</option>
+                                    <template x-for="item in items" :key="item.id">
+                                        <option :value="item.id" x-text="item.name"></option>
+                                    </template>
+                                </select>
                             </div>
-                            <div class="form-group">
-                                <label for="total_quantity">Jumlah Barang</label>
-                                <div class="input-group">
-                                    <input id="total_quantity" name="total_quantity" class="form-control"
-                                        type="number" placeholder="Jumlah Barang ..." wire:model="total_quantity"
-                                        autocomplete="total_quantity" />
-                                </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="quantity">Jumlah Barang</label>
+                            <div class="input-group">
+                                <input id="quantity" name="quantity" class="form-control" type="number"
+                                    placeholder="Jumlah Barang ..." wire:model.blur="quantity"
+                                    autocomplete="quantity" />
                             </div>
-                        @endif
+                        </div>
 
                         <div>
                             <button class="btn btn-warning" type="button" disabled wire:loading wire:target="store">
@@ -241,7 +248,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default bg-secondary" data-dismiss="modal"
-                        wire:click="$dispatch('close-modal')">
+                        wire:click="$dispatch('close-modal');">
                         {{ __('Close') }}
                     </button>
                 </div>
@@ -254,6 +261,7 @@
     <script>
         $wire.on('close-modal', (event) => {
             $('#distributor_id').val(null).trigger('change');
+            $('#incoming-item-modal').modal('hide');
         });
         Alpine.magic('deleteItem', () => {
             return (id, name) => SwalDialog.fire({
@@ -261,7 +269,7 @@
                 icon: `warning`,
                 confirmButtonText: `Hapus !`,
                 customClass: {
-                    confirmButton: `btn btn-danger`
+                    confirmButton: `bg-danger`
                 }
             }).then((result) => {
                 if (result.isConfirmed) {

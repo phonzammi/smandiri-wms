@@ -5,21 +5,26 @@ namespace App\Livewire\Items\IncomingTransactions;
 use App\Models\Distributor;
 use App\Models\IncomingTransaction;
 use App\Models\Item;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Illuminate\Validation\Rule;
 
 class ShowIncomingTransaction extends Component
 {
     public IncomingTransaction $incomingTransaction;
-    public int $distributor_id, $item_id, $total_quantity, $total_price;
-    public $distributors;
-    public $items;
+    public Collection $distributors;
+    public int $quantity, $total_price;
+    public ?int $distributor_id = null;
+    public ?int $item_id = null;
+    public array $items = [];
     public ?Item $selectedItem = null;
 
     public function mount()
     {
         $this->incomingTransaction->loadMissing(['incoming_items']);
         $this->distributors = Distributor::select(["id", "name"])->orderBy('name')->get();
+        $this->items = Item::select(["id", "distributor_id", "name"])->get()->toArray();
     }
 
     public function store()
@@ -32,21 +37,22 @@ class ShowIncomingTransaction extends Component
             return;
         }
         $validated = $this->validate();
-        $this->total_price = $this->selectedItem->price * $validated['total_quantity'];
-        $this->selectedItem->quantity += $validated['total_quantity'];
+
+        $total_price = $this->selectedItem->price * $validated['quantity'];
+        $this->selectedItem->quantity += $validated['quantity'];
+
         if ($this->selectedItem->save()) {
             $this->incomingTransaction->incoming_items()->attach($this->selectedItem->id, [
-                'total_quantity' => $validated['total_quantity'],
-                'total_price' => $this->total_price
+                'quantity' => $validated['quantity'],
+                'total_price' => $total_price
             ]);
-            $this->syncTotals();
         }
         $this->dispatch('toast-message', props: [
             'icon' => 'success',
             'text' => 'Barang Masuk berhasil ditambahkan',
         ]);
-        $this->dispatch('incoming-item-ok');
-        $this->hapus();
+        $this->dispatch('close-modal');
+        $this->dispatch('refresh');
     }
 
     public function complete()
@@ -54,18 +60,16 @@ class ShowIncomingTransaction extends Component
         if ($this->incomingTransaction->is_completed) {
             $this->dispatch('toast-message', props: [
                 'icon' => 'info',
-                'text' => "Transaksi Barang Masuk sudah selesai!",
+                'text' => "Pengisian data Transaksi Barang Masuk sudah selesai!",
             ]);
             return;
         }
-        $this->incomingTransaction->is_completed = true;
-        if ($this->incomingTransaction->save()) {
-            $this->dispatch('toast-message', props: [
-                'icon' => 'success',
-                'text' => 'Transaksi Barang Masuk Selesai',
-            ]);
-            $this->syncTotals();
-        }
+        $this->incomingTransaction->update(['is_completed' => true]);
+        $this->dispatch('toast-message', props: [
+            'icon' => 'success',
+            'text' => 'Pengisian Data Transaksi Barang Masuk selesai!',
+        ]);
+        $this->dispatch('refresh');
     }
 
     public function destroy(Item $item)
@@ -73,16 +77,15 @@ class ShowIncomingTransaction extends Component
         if ($this->incomingTransaction->is_completed) {
             $this->dispatch('toast-message', props: [
                 'icon' => 'error',
-                'text' => "Transaksi Barang Masuk sudah selesai! Tidak dapat menghapus Barang Masuk.",
+                'text' => "Pengisian data Transaksi Barang Masuk sudah selesai! Tidak dapat menghapus Barang Masuk.",
             ]);
             return;
         }
-        $incoming_item = $this->incomingTransaction->incoming_items->find($item->id);
 
+        $incoming_item = $this->incomingTransaction->incoming_items->find($item->id);
         if ($incoming_item && $this->incomingTransaction->incoming_items()->detach($item->id)) {
-            $item->quantity -= $incoming_item->pivot->total_quantity;
+            $item->quantity -= $incoming_item->pivot->quantity;
             $item->save();
-            $this->syncTotals();
         }
         $this->dispatch('toast-message', props: [
             'icon' => 'success',
@@ -94,9 +97,14 @@ class ShowIncomingTransaction extends Component
     public function rules()
     {
         return [
-            'distributor_id' => ['required', 'integer', 'exists:distributors,id'],
-            'item_id' => ['required', 'integer', 'exists:items,id', 'unique:incoming_transaction_item,item_id'],
-            'total_quantity' => ['required', 'numeric']
+            'distributor_id' => ['nullable', 'integer', 'exists:distributors,id'],
+            'item_id' => [
+                'required',
+                'integer',
+                'exists:items,id',
+                Rule::unique('incoming_transaction_item', 'item_id')->where('incoming_transaction_id', $this->incomingTransaction->id),
+            ],
+            'quantity' => ['required', 'numeric']
         ];
     }
 
@@ -105,39 +113,44 @@ class ShowIncomingTransaction extends Component
         return [
             "distributor_id" => "Distributor",
             "item_id" => "Barang",
-            "total_quantity" => "Jumlah Barang",
+            "quantity" => "Jumlah Barang",
         ];
     }
 
-    public function updatedDistributorId()
+    public function updated($fields)
     {
         $this->resetValidation();
-        $this->items = isset($this->distributor_id) && $this->distributor_id ? Item::where("distributor_id", $this->distributor_id)->orderBy("name")->get() : null;
+        if ($fields === 'distributor_id') {
+            $this->items = Item::select(["id", "distributor_id", "name"])
+                ->when($this->distributor_id, fn($query) => $query->where("distributor_id", $this->distributor_id))
+                ->get()->toArray();
+            $this->dispatch('items-updated', items: $this->items);
+        }
+        if ($fields === 'item_id') {
+            $this->selectedItem = $this->item_id ? Item::find($this->item_id) : null;
+        }
     }
 
-    public function updatedItemId()
+    private function syncTotals()
     {
-        $this->selectedItem = isset($this->item_id) && $this->item_id ? Item::find($this->item_id) : null;
-    }
-
-    #[On('refresh')]
-    public function refresh()
-    {
-        return;
+        $this->incomingTransaction->update([
+            'quantities' => $this->incomingTransaction->incoming_items->sum('pivot.quantity'),
+            'total_money' => $this->incomingTransaction->incoming_items->sum('pivot.total_price'),
+        ]);
     }
 
     #[On('close-modal')]
     public function hapus()
     {
         $this->resetValidation();
-        $this->reset(['distributor_id', 'item_id', 'total_quantity', 'total_price', 'items', 'selectedItem']);
+        $this->reset(['distributor_id', 'item_id', 'items', 'selectedItem', 'quantity', 'total_price']);
     }
 
-    private function syncTotals()
+    #[On('refresh')]
+    public function refresh()
     {
-        $this->incomingTransaction->total_quantity = $this->incomingTransaction->incoming_items->sum('pivot.total_quantity');
-        $this->incomingTransaction->total_money = $this->incomingTransaction->incoming_items->sum('pivot.total_price');
-        $this->incomingTransaction->save();
+        $this->syncTotals();
+        return;
     }
 
     public function render()

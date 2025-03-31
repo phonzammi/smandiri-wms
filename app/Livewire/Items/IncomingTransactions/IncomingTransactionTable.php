@@ -17,7 +17,7 @@ class IncomingTransactionTable extends DataTableComponent
     {
         $this->setPrimaryKey('id');
         $this->setThSortButtonAttributes(function (Column $column) {
-            if ($column->isField('total_quantity')) {
+            if ($column->isField('quantities')) {
                 return [
                     'class' => 'justify-content-end',
                     'default' => true
@@ -28,7 +28,7 @@ class IncomingTransactionTable extends DataTableComponent
             ];
         });
         $this->setTdAttributes(function (Column $column, $row, $columnIndex, $rowIndex) {
-            if ($column->isField('total_quantity')) {
+            if ($column->isField('quantities')) {
                 return [
                     'default' => true,
                     'class' => 'text-right',
@@ -47,7 +47,7 @@ class IncomingTransactionTable extends DataTableComponent
                 ->format(fn() => ++$this->index + ($this->getPage() - 1) * $this->getPerPage()),
             Column::make("Kode Invoice", "invoice_code")
                 ->sortable(),
-            Column::make("Jumlah", "total_quantity")
+            Column::make("Jumlah", "quantities")
                 ->sortable()
                 ->searchable(),
             Column::make("Kurir", "courier")
@@ -67,6 +67,11 @@ class IncomingTransactionTable extends DataTableComponent
             ButtonGroupColumn::make('Aksi')
                 ->attributes(fn($row) => ['class' => 'mx-auto'])
                 ->buttons([
+                    // TODO: add functionality to edit transaction info
+                    // LinkColumn::make('Edit')
+                    //     ->title(fn($row) => 'Edit')
+                    //     ->location(fn($row) => "#")
+                    //     ->attributes(fn($row) => ['class' => 'btn btn-xs btn-warning']),
                     LinkColumn::make('Detail')
                         ->title(fn($row) => 'Detail')
                         ->location(fn($row) => route('incoming-transactions.show', $row->invoice_code))
@@ -74,10 +79,13 @@ class IncomingTransactionTable extends DataTableComponent
                     LinkColumn::make('Hapus')
                         ->title(fn($row) => 'Hapus')
                         ->location(fn($row) => '')
-                        ->attributes(fn($row) => [
-                            'class' => 'btn btn-xs btn-danger',
-                            'x-on:click.prevent' => '$deleteTransaction(' . $row->id . ', `' . $row->invoice_code . '`, ' . $row->is_completed . ')'
-                        ]),
+                        ->attributes(function ($row) {
+                            $disabled = $row->is_completed ? "disabled d-none" : "";
+                            return [
+                                'class' => "btn btn-xs btn-danger $disabled",
+                                'x-on:click.prevent' => '$deleteTransaction(' . $row->id . ', `' . $row->invoice_code . '`, ' . $row->is_completed . ')'
+                            ];
+                        }),
                 ]),
         ];
     }
