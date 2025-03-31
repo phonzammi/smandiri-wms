@@ -15,7 +15,7 @@ class IncomingTransaction extends Model
         'date',
         'courier',
         'distributor',
-        'total_quantity',
+        'quantities',
         'total_money',
         'is_completed'
     ];
@@ -36,7 +36,7 @@ class IncomingTransaction extends Model
     {
         return $this->belongsToMany(Item::class, 'incoming_transaction_item')
             ->withPivot([
-                'total_quantity',
+                'quantity',
                 'total_price'
             ])->orderBy('name');
     }

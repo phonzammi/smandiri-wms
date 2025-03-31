@@ -16,7 +16,7 @@ class IncomingTransactionComponent extends Component
     {
         $validated = $this->validate();
         $newIncomingTransaction = IncomingTransaction::create($validated);
-        session()->flash('status', 'Transaksi Barang Masuk berhasil ditambahkan. Silahkan tambah Barang Masuk untuk transaksi ini');
+        session()->flash('status', 'Transaksi Barang Masuk berhasil ditambahkan. Silahkan tambah Barang Masuk untuk menyelesaikan transaksi ini.');
         $this->redirectRoute('incoming-transactions.show', ['incomingTransaction' => $newIncomingTransaction]);
     }
 
@@ -26,7 +26,7 @@ class IncomingTransactionComponent extends Component
         if (!$incomingTransaction->is_completed) {
             foreach ($incomingTransaction->incoming_items as $incoming_item) {
                 $item = Item::find($incoming_item->id);
-                $item->quantity -= $incoming_item->pivot->total_quantity;
+                $item->quantity -= $incoming_item->pivot->quantity;
                 $item->save();
             }
             $incomingTransaction->forceDelete();
@@ -35,7 +35,7 @@ class IncomingTransactionComponent extends Component
         }
         $this->dispatch('toast-message', props: [
             'icon' => 'success',
-            'text' => "Transaksi Barang Masuk {$incomingTransaction->invoice_code} berhasil dihapus",
+            'text' => "Transaksi Barang Masuk {$incomingTransaction->invoice_code} berhasil dihapus.",
         ]);
         $this->dispatch('refreshDatatable');
     }

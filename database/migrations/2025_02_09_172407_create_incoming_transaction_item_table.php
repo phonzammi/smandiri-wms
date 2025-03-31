@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('incoming_transaction_item', function (Blueprint $table) {
             $table->foreignId('incoming_transaction_id')->constrained('incoming_transactions')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('item_id')->constrained('items')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->integer('total_quantity');
+            $table->integer('quantity');
             $table->decimal('total_price', 25, 0);
             $table->primary(['incoming_transaction_id', 'item_id']);
             $table->timestamps();
