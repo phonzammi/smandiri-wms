@@ -7,6 +7,7 @@ use App\Models\Distributor;
 use App\Models\Item;
 use App\Models\OutgoingTransaction;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
@@ -34,19 +35,24 @@ class ShowOutgoingTransaction extends Component
     public function store()
     {
         $validated = $this->validate();
-        $total_price = $this->selectedItem->price * $validated['quantity'];
-        $total_net_price = $total_price - $validated['discount'];
 
-        $this->selectedItem->quantity -= $validated['quantity'];
-        if ($this->selectedItem->save()) {
+        $quantity = $validated['quantity'];
+        $discount = $validated['discount'];
+        $total_price = $this->selectedItem->price * $quantity;
+        $total_net_price = $total_price - $discount;
+        $this->selectedItem->quantity -= $quantity;
+
+        DB::transaction(function () use ($quantity, $discount, $total_price, $total_net_price) {
+            $this->selectedItem->save();
             $this->outgoingTransaction->outgoing_items()->attach($this->selectedItem->id, [
-                'quantity' => $validated['quantity'],
+                'quantity' => $quantity,
                 'unit_price' => $this->selectedItem->price,
-                'discount' => $validated['discount'],
+                'discount' => $discount,
                 'total_price' => $total_price,
                 'total_net_price' => $total_net_price,
             ]);
-        }
+        });
+
         // $this->syncTotals();
         $this->dispatch('toast-message', props: [
             'icon' => 'success',
@@ -82,11 +88,16 @@ class ShowOutgoingTransaction extends Component
             ]);
             return;
         }
+
         $outgoing_item = $this->outgoingTransaction->outgoing_items->find($item->id);
-        if ($outgoing_item && $this->outgoingTransaction->outgoing_items()->detach($item->id)) {
-            $item->quantity += $outgoing_item->pivot->quantity;
-            $item->save();
-        }
+        DB::transaction(function () use ($outgoing_item, $item) {
+            if ($outgoing_item) {
+                $this->outgoingTransaction->outgoing_items()->detach($item->id);
+                $item->quantity += $outgoing_item->pivot->quantity;
+                $item->save();
+            }
+        });
+
         $this->dispatch('toast-message', props: [
             'icon' => 'success',
             'text' => "Barang $item->name berhasil Dihapus",

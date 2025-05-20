@@ -6,6 +6,7 @@ use App\Models\Distributor;
 use App\Models\IncomingTransaction;
 use App\Models\Item;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
@@ -38,15 +39,18 @@ class ShowIncomingTransaction extends Component
         }
         $validated = $this->validate();
 
-        $total_price = $this->selectedItem->price * $validated['quantity'];
-        $this->selectedItem->quantity += $validated['quantity'];
+        $quantity = $validated["quantity"];
+        $total_price = $this->selectedItem->price * $quantity;
+        $this->selectedItem->quantity += $quantity;
 
-        if ($this->selectedItem->save()) {
+        DB::transaction(function () use ($total_price, $quantity) {
+            $this->selectedItem->save();
             $this->incomingTransaction->incoming_items()->attach($this->selectedItem->id, [
-                'quantity' => $validated['quantity'],
+                'quantity' => $quantity,
                 'total_price' => $total_price
             ]);
-        }
+        });
+
         $this->dispatch('toast-message', props: [
             'icon' => 'success',
             'text' => 'Barang Masuk berhasil ditambahkan',
@@ -83,10 +87,14 @@ class ShowIncomingTransaction extends Component
         }
 
         $incoming_item = $this->incomingTransaction->incoming_items->find($item->id);
-        if ($incoming_item && $this->incomingTransaction->incoming_items()->detach($item->id)) {
-            $item->quantity -= $incoming_item->pivot->quantity;
-            $item->save();
-        }
+        DB::transaction(function () use ($incoming_item, $item) {
+            if ($incoming_item) {
+                $this->incomingTransaction->incoming_items()->detach($item->id);
+                $item->quantity -= $incoming_item->pivot->quantity;
+                $item->save();
+            }
+        });
+
         $this->dispatch('toast-message', props: [
             'icon' => 'success',
             'text' => "Barang $item->name berhasil Dihapus",
