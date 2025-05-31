@@ -70,9 +70,14 @@
             }
         });
         const SwalDialog = Swal.mixin({
+            title: `Apakah Anda yakin ?`,
+            icon: `question`,
             showCancelButton: true,
             confirmButtonText: "Ya !",
             cancelButtonText: "Batal",
+            customClass: {
+                confirmButton: 'bg-success',
+            },
         });
         document.addEventListener('livewire:init', () => {
             Livewire.on('toast-message', (event) => {

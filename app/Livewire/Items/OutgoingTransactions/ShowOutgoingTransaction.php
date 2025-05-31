@@ -64,19 +64,64 @@ class ShowOutgoingTransaction extends Component
 
     public function complete()
     {
-        if (!$this->outgoingTransaction->status->isDraft()) {
+        if ($this->outgoingTransaction->status->isDraft()) {
+            DB::transaction(function () {
+                $this->outgoingTransaction->update(['status' => OutgoingTransactionStatus::READY]);
+            });
             $this->dispatch('toast-message', props: [
-                'icon' => 'info',
-                'text' => "Pengisian data Transaksi Barang Keluar sudah selesai!",
+                'icon' => 'success',
+                'text' => 'Pengisian Data Transaksi Barang Keluar Selesai !',
             ]);
-            return;
+            $this->dispatch('refresh');
         }
-        $this->outgoingTransaction->update(['status' => OutgoingTransactionStatus::READY]);
-        $this->dispatch('toast-message', props: [
-            'icon' => 'success',
-            'text' => 'Pengisian Data Transaksi Barang Keluar Selesai !',
-        ]);
-        $this->dispatch('refresh');
+    }
+
+    public function deliver()
+    {
+        if ($this->outgoingTransaction->status->isReady()) {
+            DB::transaction(function () {
+                $this->outgoingTransaction->update(['status' => OutgoingTransactionStatus::DELIVERING]);
+            });
+            $this->dispatch('toast-message', props: [
+                'icon' => 'success',
+                'text' => 'Berhasil memperbarui status Transaksi: Barang Sedang Diantar !',
+            ]);
+            $this->dispatch('refresh');
+        }
+    }
+
+    public function delivered()
+    {
+        if ($this->outgoingTransaction->status->isDelivered()) {
+            DB::transaction(function () {
+                $this->outgoingTransaction->update(['status' => OutgoingTransactionStatus::DELIVERED]);
+            });
+            $this->dispatch('toast-message', props: [
+                'icon' => 'success',
+                'text' => 'Berhasil memperbarui status Transaksi: Barang Sudah Sampai !',
+            ]);
+            $this->dispatch('refresh');
+        }
+    }
+
+    public function cancel(string $reason = '')
+    {
+        if (!$this->outgoingTransaction->status->isCanceled()) {
+            foreach ($this->outgoingTransaction->outgoing_items as $outgoingItem) {
+                $item = Item::find($outgoingItem->id);
+                $item->quantity += $outgoingItem->pivot->quantity;
+                $item->save();
+            }
+            $this->outgoingTransaction->update([
+                'cancel_reason' => str($reason)->squish(),
+                'status' => OutgoingTransactionStatus::CANCELED
+            ]);
+            $this->dispatch('toast-message', props: [
+                'icon' => 'success',
+                'text' => 'Transaksi telah dibatalkan. Seluruh data barang telah dikembalikan ke stok.',
+            ]);
+            $this->dispatch('refresh');
+        }
     }
 
     public function destroy(Item $item)

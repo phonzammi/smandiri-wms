@@ -15,6 +15,21 @@ enum OutgoingTransactionStatus: string
         return $this === self::DRAFT;
     }
 
+    public function isReady(): bool
+    {
+        return $this === self::READY;
+    }
+
+    public function isDelivering(): bool
+    {
+        return $this === self::DELIVERING;
+    }
+
+    public function isDelivered(): bool
+    {
+        return $this === self::DELIVERED;
+    }
+
     public function isCanceled(): bool
     {
         return $this === self::CANCELED;
