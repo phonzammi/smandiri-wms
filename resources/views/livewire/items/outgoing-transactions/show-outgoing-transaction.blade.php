@@ -13,14 +13,42 @@
             <div class="card-tools">
                 @if ($outgoingTransaction->status->isDraft())
                     <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                        data-target="#edit-transaction-modal">
+                        data-target="#outgoing-transaction-edit">
                         <i class="mr-1 fas fa-edit"></i>Edit Transaksi
                     </button>
                 @else
                     <a href="{{ route('bills.export', $outgoingTransaction->invoice_code) }}"
-                        class="btn btn-sm btn-success" target="_blank">
+                        class="btn btn-sm btn-info" target="_blank">
                         <i class="mr-1 fas fa-print"></i>Cetak Bon
                     </a>
+                @endif
+                @if (!$outgoingTransaction->status->isDelivered() && !$outgoingTransaction->status->isCanceled())
+                    @if ($outgoingTransaction->status->isReady())
+                        <button class="btn btn-sm btn-success"
+                            x-on:click.prevent="SwalDialog.fire().then((res) => {if (res.isConfirmed) $wire.deliver();});">
+                            <i class="mr-1 fas fa-truck"></i>Berangkat
+                        </button>
+                    @endif
+                    @if ($outgoingTransaction->status->isDelivering())
+                        <button class="btn btn-sm btn-success"
+                            x-on:click.prevent="SwalDialog.fire().then((res) => {if (res.isConfirmed) $wire.delivered();});">
+                            <i class="mr-1 fas fa-truck-loading"></i>Barang Sampai
+                        </button>
+                    @endif
+                    <button class="btn btn-sm btn-danger"
+                        x-on:click.prevent="SwalDialog.fire({
+                                    icon: `warning`,
+                                    input: `text`,
+                                    inputLabel: `Alasan pembatalan (Opsional):`,
+                                    inputPlaceholder: `Alasan pembatalan (misal: Toko tutup) ...`,
+                                    customClass: { confirmButton: `bg-danger` }
+                                }).then((res) => {
+                                    if (res.isConfirmed) {
+                                        $wire.cancel(res.value);
+                                    }
+                                });">
+                        <i class="mr-1 fas fa-ban"></i>Batal
+                    </button>
                 @endif
             </div>
         </div>
@@ -76,7 +104,12 @@
                         </tr>
                         <tr>
                             <th scope="row" style="width:20%;">Status</th>
-                            <td>: {!! $outgoingTransaction->status->getLabelBadge() !!}</td>
+                            <td>
+                                : {!! $outgoingTransaction->status->getLabelBadge() !!}
+                                @if ($outgoingTransaction->status->isCanceled())
+                                    <span class="badge badge-info">{{ $outgoingTransaction->cancel_reason }}</span>
+                                @endif
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -172,7 +205,7 @@
         </div>
     </div>
 
-    {{-- Modal Form --}}
+    {{-- Add Item Modal Form --}}
     <div class="modal fade" id="outgoing-item-modal" wire:ignore.self data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
