@@ -182,6 +182,14 @@ return [
     'attributes' => [
         'name' => 'Nama',
         'phone' => 'No. Hp',
-        'address' => 'Alamat'
+        'address' => 'Alamat',
+        "salesman_id" => "Sales",
+        "date" => "Tanggal Keluar",
+        "store_id" => "Toko",
+        "payment_method" => "Metode Pembayaran",
+        "distributor_id" => "Distributor",
+        "item_id" => "Barang",
+        "quantity" => "Jumlah Barang",
+        "discount" => "Diskon"
     ],
 ];

@@ -13,8 +13,10 @@
             <div class="card-tools">
                 @if ($outgoingTransaction->status->isDraft())
                     <button type="button" class="btn btn-sm btn-info" data-toggle="modal"
-                        data-target="#outgoing-transaction-edit">
-                        <i class="mr-1 fas fa-edit"></i>Edit Transaksi
+                        data-target="#outgoing-transaction-edit-modal"
+                        wire:click="$dispatch('edit-outgoing-transaction', { outgoingTransactionId: {{ $outgoingTransaction->id }} })">
+                        <i class="mr-1
+                        fas fa-edit"></i>Edit Transaksi
                     </button>
                 @else
                     <a href="{{ route('bills.export', $outgoingTransaction->invoice_code) }}"
@@ -205,6 +207,8 @@
         </div>
     </div>
 
+    <livewire:items.outgoing-transactions.outgoing-transaction-edit-modal :$outgoingTransaction />
+
     {{-- Add Item Modal Form --}}
     <div class="modal fade" id="outgoing-item-modal" wire:ignore.self data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog">
@@ -345,6 +349,7 @@
         $wire.on('close-modal', (event) => {
             $('#distributor_id').val(null).trigger('change');
             $('#outgoing-item-modal').modal('hide');
+            $('#outgoing-transaction-edit-modal').modal('hide');
         });
         Alpine.magic('deleteItem', () => {
             return (id, name) => SwalDialog.fire({

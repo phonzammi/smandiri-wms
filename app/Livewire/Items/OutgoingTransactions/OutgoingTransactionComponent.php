@@ -59,16 +59,6 @@ class OutgoingTransactionComponent extends Component
         ];
     }
 
-    public function validationAttributes()
-    {
-        return [
-            "salesman_id" => "Sales",
-            "date" => "Tanggal Keluar",
-            "store_id" => "Toko",
-            "payment_method" => "Pembayaran"
-        ];
-    }
-
     public function render()
     {
         $salesmen = Salesman::all();
