@@ -68,7 +68,7 @@
                     <tbody class="font-weight-bold">
                         <tr>
                             <th scope="row" style="width:20%;">Tanggal Transaksi</th>
-                            <td>: {{ $outgoingTransaction->date->format('d F Y') }}</td>
+                            <td>: {{ $outgoingTransaction->date->isoFormat('DD MMMM Y') }}</td>
                         </tr>
                         <tr>
                             <th scope="row" style="width:20%;">Kode Invoice</th>
