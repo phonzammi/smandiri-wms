@@ -72,12 +72,12 @@ return [
         'defaultOptions' => [],
         'defaultConfig' => [
             'allowInput' => true,   // Allow manual input of dates
-            'altFormat' => 'F j, Y', // Date format that will be displayed once selected
-            'ariaDateFormat' => 'F j, Y', // An aria-friendly date format
+            'altFormat' => 'j F Y', // Date format that will be displayed once selected
+            'ariaDateFormat' => 'j F Y', // An aria-friendly date format
             'dateFormat' => 'Y-m-d', // Date format that will be received by the filter
             'earliestDate' => null, // The earliest acceptable date
             'latestDate' => null, // The latest acceptable date
-            'locale' => 'en', // The default locale
+            'locale' => 'id', // The default locale
         ],
     ],
 
