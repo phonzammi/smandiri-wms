@@ -7,6 +7,7 @@ use Rappasoft\LaravelLivewireTables\Views\Column;
 use App\Models\OutgoingTransaction;
 use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
 use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
+use Illuminate\Database\Eloquent\Builder;
 
 class OutgoingTransactionTable extends DataTableComponent
 {
@@ -60,5 +61,11 @@ class OutgoingTransactionTable extends DataTableComponent
                         })
                 ]),
         ];
+    }
+
+    public function builder(): Builder
+    {
+        return OutgoingTransaction::query()
+            ->orderBy('date', 'desc');
     }
 }

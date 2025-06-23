@@ -1,9 +1,9 @@
 <div>
     @section('plugins.Select2', true)
-    @section('content_header_title', 'Transaksi Barang Keluar')
+    @section('content_header_title', 'Transaksi Penjualan')
     <div class="card card-primary" x-on:close-modal.window="$('#store_id').val(null).trigger('change');">
         <div class="card-header">
-            <h3 class="card-title m-1">Transaksi Barang Keluar</h3>
+            <h3 class="card-title m-1">Transaksi Penjualan</h3>
             <div class="card-tools">
                 <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
                     data-target="#outgoing-transaction-modal">

@@ -9,6 +9,8 @@ use App\Livewire\Items\OutgoingTransactions\OutgoingTransactionComponent;
 use App\Livewire\Items\OutgoingTransactions\ShowOutgoingTransaction;
 use App\Livewire\ItemUnits\ItemUnitComponent;
 use App\Livewire\Salesman\SalesmanComponent;
+use App\Livewire\SalesmanIncentive\SalesmanIncentiveComponent;
+use App\Livewire\SalesmanIncentive\ShowSalesmanIncentive;
 use App\Livewire\Stores\StoreComponent;
 use App\Models\OutgoingTransaction;
 use Illuminate\Support\Facades\Route;
@@ -51,6 +53,10 @@ Route::middleware('auth')->group(function () {
 
             return view('bills.export', compact('outgoingTransaction'));
         })->name('bills.export');
+    });
+    Route::prefix("/insentif-sales")->group(function () {
+        Route::get('/', SalesmanIncentiveComponent::class)->name('salesman-incentive');
+        Route::get("{salesman}/detail", ShowSalesmanIncentive::class)->name('salesman-incentive.show');
     });
 });
 

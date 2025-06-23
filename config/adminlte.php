@@ -329,10 +329,6 @@ return [
                     'route' => 'stores',
                 ],
                 [
-                    'text' => 'Satuan Barang',
-                    'route' => 'item-units',
-                ],
-                [
                     'text' => 'Distributor',
                     'route' => 'distributors',
                 ],
@@ -347,12 +343,31 @@ return [
                     'route' => 'items'
                 ],
                 [
-                    'text' => 'Barang Masuk',
-                    'route' => 'incoming-transactions',
+                    'text' => 'Satuan Barang',
+                    'route' => 'item-units',
+                ],
+            ]
+        ],
+        [
+            'text' => 'Transaksi Penjualan',
+            'route' => 'outgoing-transactions',
+            'icon' => 'fas fa-fw fa-paste',
+        ],
+        [
+            'text' => 'Laporan',
+            'icon' => 'fas fa-fw fa-cubes',
+            'submenu' => [
+                [
+                    'text' => 'Insentif Sales',
+                    'route' => 'salesman-incentive'
                 ],
                 [
-                    'text' => 'Barang Keluar',
-                    'route' => 'outgoing-transactions',
+                    'text' => 'Barang Terlaris',
+                    'url' => '#',
+                ],
+                [
+                    'text' => 'Laporan Penjualan',
+                    'url' => '#',
                 ],
             ]
         ],
