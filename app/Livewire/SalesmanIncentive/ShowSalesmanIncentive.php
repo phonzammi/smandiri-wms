@@ -2,6 +2,7 @@
 
 namespace App\Livewire\SalesmanIncentive;
 
+use App\Enums\OutgoingTransactionStatus;
 use App\Models\OutgoingTransaction;
 use App\Models\Salesman;
 use Livewire\Attributes\On;
@@ -34,6 +35,10 @@ class ShowSalesmanIncentive extends Component
     public function render()
     {
         $this->total_transaction = OutgoingTransaction::where('salesman_id', $this->salesman->id)
+            ->where(function (Builder $query) {
+                $query->where('status', OutgoingTransactionStatus::DELIVERING)
+                    ->orWhere('status', OutgoingTransactionStatus::DELIVERED);
+            })
             ->when($this->dateRangeFilter, function (Builder $query, array $dateRangeFilter) {
                 $query->whereDate('outgoing_transactions.date', '>=', $dateRangeFilter['minDate'])
                     ->whereDate('outgoing_transactions.date', '<=', $dateRangeFilter['maxDate']);

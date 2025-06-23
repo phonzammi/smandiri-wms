@@ -2,12 +2,12 @@
 
 namespace App\Livewire\SalesmanIncentive;
 
+use App\Enums\OutgoingTransactionStatus;
 use App\Models\Salesman;
 use App\Models\OutgoingTransaction;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
-use Rappasoft\LaravelLivewireTables\Views\Actions\Action;
 use Rappasoft\LaravelLivewireTables\Views\Filters\DateRangeFilter;
 
 class ShowSalesmanIncentiveTable extends DataTableComponent
@@ -83,8 +83,8 @@ class ShowSalesmanIncentiveTable extends DataTableComponent
         return OutgoingTransaction::query()
             ->where("salesman_id", $this->salesman->id)
             ->where(function (Builder $query) {
-                $query->where('status', 'delivering')
-                    ->orWhere('status', 'delivered');
+                $query->where('status', OutgoingTransactionStatus::DELIVERING)
+                    ->orWhere('status', OutgoingTransactionStatus::DELIVERED);
             })
             ->orderBy('date', 'desc');
     }
