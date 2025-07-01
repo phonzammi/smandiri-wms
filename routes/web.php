@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PrintSalesmanIncentiveController;
 use App\Http\Controllers\PrintSalesReportController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Distributors\DistributorComponent;
@@ -60,6 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix("/insentif-sales")->group(function () {
         Route::get('/', SalesmanIncentiveComponent::class)->name('salesman-incentive');
         Route::get("{salesman}/detail", ShowSalesmanIncentive::class)->name('salesman-incentive.show');
+        Route::get("{salesman}/cetak", PrintSalesmanIncentiveController::class)->name('salesman-incentive.print');
     });
     Route::get("/laporan-penjualan", SalesReportComponent::class)->name('reports.sales-report');
     Route::get("/laporan-penjualan/cetak", PrintSalesReportController::class)->name('reports.sales-report.print');

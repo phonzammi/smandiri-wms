@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Salesman extends Model
@@ -14,6 +15,11 @@ class Salesman extends Model
         'phone',
         'address'
     ];
+
+    public function outgoing_transactions(): HasMany
+    {
+        return $this->hasMany(OutgoingTransaction::class);
+    }
 
     protected static function boot()
     {
