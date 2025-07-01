@@ -366,8 +366,8 @@ return [
                     'route' => 'reports.sales-report',
                 ],
                 [
-                    'text' => 'Laporan Penjualan',
-                    'url' => '#',
+                    'text' => 'Barang Terlaris',
+                    'route' => 'reports.top-products',
                 ],
             ]
         ],
