@@ -2,7 +2,6 @@
 
 namespace App\Livewire\SalesmanIncentive;
 
-use App\Enums\OutgoingTransactionStatus;
 use App\Models\Salesman;
 use App\Models\OutgoingTransaction;
 use Illuminate\Database\Eloquent\Builder;
@@ -24,22 +23,6 @@ class ShowSalesmanIncentiveTable extends DataTableComponent
         $this->setEagerLoadAllRelationsEnabled();
     }
 
-    public function filterUpdated()
-    {
-        $appliedFilters = $this->getAppliedFilters();
-        if (isset($appliedFilters['jarak-tanggal'])) {
-            $this->dispatch('update-filter', $appliedFilters['jarak-tanggal']);
-        }
-    }
-
-    public function filterReset()
-    {
-        $appliedFilters = $this->getAppliedFilters();
-        if (isset($appliedFilters['jarak-tanggal'])) {
-            $this->dispatch('update-filter', null);
-        }
-    }
-
     public function columns(): array
     {
         return [
@@ -47,18 +30,20 @@ class ShowSalesmanIncentiveTable extends DataTableComponent
                 ->format(fn() => ++$this->index + ($this->getPage() - 1) * $this->getPerPage()),
             Column::make("Kode Invoice", "invoice_code")
                 ->sortable()
-                ->searchable(),
+                ->searchable()
+                ->footer(fn() => "Total"),
             Column::make("Toko", "store.name")
                 ->sortable()
                 ->searchable(),
             Column::make("Tanggal", "date")
-                ->sortable()
-                ->searchable()
-                ->format(fn($value) => $value->isoFormat('DD MMMM Y')),
-            Column::make("Sub Total", "net_prices")
-                ->format(fn($value) => "Rp. " . number_format($value, 0, ',', '.'))
+                ->format(fn($value) => $value->isoFormat('DD MMMM Y'))
                 ->sortable()
                 ->searchable(),
+            Column::make("Sub Total", "net_prices")
+                ->sortable()
+                ->searchable()
+                ->format(fn($value) => "Rp. " . number_format($value, 0, ',', '.'))
+                ->footer(fn($rows) => "Rp. " . number_format($rows->sum('net_prices'), 0, ',', '.'))
         ];
     }
 
@@ -66,26 +51,26 @@ class ShowSalesmanIncentiveTable extends DataTableComponent
     {
         return [
             DateRangeFilter::make('Jarak Tanggal', 'jarak-tanggal')
-                ->config([
-                    'placeholder' => 'Isi Jarak Tanggal ...',
-                ])
-                ->filter(function (Builder $builder, array $dateRange) {
-                    $this->dispatch('filter-change', dateRange: $dateRange);
-                    $builder
-                        ->whereDate('outgoing_transactions.date', '>=', $dateRange['minDate'])
-                        ->whereDate('outgoing_transactions.date', '<=', $dateRange['maxDate']);
-                }),
+                ->config(['placeholder' => 'Isi Jarak Tanggal ...']),
         ];
+    }
+
+    public function filterReset()
+    {
+        $appliedFilters = $this->getAppliedFilterWithValue('jarak-tanggal');
+        if ($appliedFilters) $this->dispatch('update-filter', null);
     }
 
     public function builder(): Builder
     {
-        return OutgoingTransaction::query()
+        return OutgoingTransaction::query()->sold()
             ->where("salesman_id", $this->salesman->id)
-            ->where(function (Builder $query) {
-                $query->where('status', OutgoingTransactionStatus::DELIVERING)
-                    ->orWhere('status', OutgoingTransactionStatus::DELIVERED);
+            ->when($this->getAppliedFilterWithValue('jarak-tanggal'), function (Builder $builder, array $dateRange) {
+                $this->dispatch('update-filter', $dateRange);
+                $builder->whereBetween('outgoing_transactions.date', [$dateRange['minDate'], $dateRange['maxDate']]);
             })
-            ->orderBy('date', 'desc');
+            ->when(count($this->getTableStateToArray()['sorts']) === 0, function (Builder $builder) {
+                $builder->orderBy('date', 'desc');
+            });
     }
 }

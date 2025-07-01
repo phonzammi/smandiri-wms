@@ -343,6 +343,10 @@ return [
                     'route' => 'items'
                 ],
                 [
+                    'text' => 'Barang Masuk',
+                    'route' => 'incoming-transactions'
+                ],
+                [
                     'text' => 'Satuan Barang',
                     'route' => 'item-units',
                 ],
@@ -359,7 +363,8 @@ return [
             'submenu' => [
                 [
                     'text' => 'Insentif Sales',
-                    'route' => 'salesman-incentive'
+                    'route' => 'salesman-incentive',
+                    'active' => ['insentif-sales*']
                 ],
                 [
                     'text' => 'Laporan Penjualan',
