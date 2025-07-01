@@ -2,13 +2,12 @@
 
 namespace App\Livewire\SalesmanIncentive;
 
-use App\Enums\OutgoingTransactionStatus;
-use App\Models\OutgoingTransaction;
-use App\Models\Salesman;
-use Livewire\Attributes\On;
 use Livewire\Component;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Salesman;
+use App\Models\OutgoingTransaction;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
+use Illuminate\Database\Eloquent\Builder;
 
 class ShowSalesmanIncentive extends Component
 {
@@ -17,13 +16,11 @@ class ShowSalesmanIncentive extends Component
 
     #[Url(as: "table-filters")]
     public ?array $search = [];
-    public int $total_transaction;
+    public int $transaction_count;
 
     public function mount()
     {
-        if ($this->search) {
-            $this->dateRangeFilter = $this->search['jarak-tanggal'];
-        }
+        if ($this->search) $this->dateRangeFilter = $this->search['jarak-tanggal'];
     }
 
     #[On('update-filter')]
@@ -34,16 +31,14 @@ class ShowSalesmanIncentive extends Component
 
     public function render()
     {
-        $this->total_transaction = OutgoingTransaction::where('salesman_id', $this->salesman->id)
-            ->where(function (Builder $query) {
-                $query->where('status', OutgoingTransactionStatus::DELIVERING)
-                    ->orWhere('status', OutgoingTransactionStatus::DELIVERED);
-            })
-            ->when($this->dateRangeFilter, function (Builder $query, array $dateRangeFilter) {
-                $query->whereDate('outgoing_transactions.date', '>=', $dateRangeFilter['minDate'])
-                    ->whereDate('outgoing_transactions.date', '<=', $dateRangeFilter['maxDate']);
-            })->sum('net_prices');
+        $outgoing_transactions = OutgoingTransaction::sold()
+            ->where('salesman_id', $this->salesman->id)
+            ->when($this->dateRangeFilter, function (Builder $query, array $dateRange) {
+                $query->whereBetween('date', [$dateRange['minDate'], $dateRange['maxDate']]);
+            })->get();
 
-        return view('livewire.salesman-incentive.show-salesman-incentive');
+        $this->transaction_count = $outgoing_transactions->count();
+
+        return view('livewire.salesman-incentive.show-salesman-incentive', compact('outgoing_transactions'));
     }
 }
