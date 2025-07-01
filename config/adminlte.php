@@ -362,8 +362,8 @@ return [
                     'route' => 'salesman-incentive'
                 ],
                 [
-                    'text' => 'Barang Terlaris',
-                    'url' => '#',
+                    'text' => 'Laporan Penjualan',
+                    'route' => 'reports.sales-report',
                 ],
                 [
                     'text' => 'Laporan Penjualan',
