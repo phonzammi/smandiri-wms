@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PrintSalesReportController;
 use App\Http\Controllers\ProfileController;
 use App\Livewire\Distributors\DistributorComponent;
 use App\Livewire\Items\IncomingTransactions\IncomingTransactionComponent;
@@ -8,6 +9,7 @@ use App\Livewire\Items\ItemComponent;
 use App\Livewire\Items\OutgoingTransactions\OutgoingTransactionComponent;
 use App\Livewire\Items\OutgoingTransactions\ShowOutgoingTransaction;
 use App\Livewire\ItemUnits\ItemUnitComponent;
+use App\Livewire\Reports\SalesReport\SalesReportComponent;
 use App\Livewire\Salesman\SalesmanComponent;
 use App\Livewire\SalesmanIncentive\SalesmanIncentiveComponent;
 use App\Livewire\SalesmanIncentive\ShowSalesmanIncentive;
@@ -58,6 +60,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/', SalesmanIncentiveComponent::class)->name('salesman-incentive');
         Route::get("{salesman}/detail", ShowSalesmanIncentive::class)->name('salesman-incentive.show');
     });
+    Route::get("/laporan-penjualan", SalesReportComponent::class)->name('reports.sales-report');
+    Route::get("/laporan-penjualan/cetak", PrintSalesReportController::class)->name('reports.sales-report.print');
 });
 
 

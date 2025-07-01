@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 
 class OutgoingTransaction extends Model
 {
@@ -63,8 +64,11 @@ class OutgoingTransaction extends Model
             ]);
     }
 
-    // public function isDraft(): bool
-    // {
-    //     return $this->status === OutgoingTransactionStatus::DRAFT;
-    // }
+    public function scopeSold(Builder $builder)
+    {
+        $builder->where(function (Builder $query) {
+            $query->where('outgoing_transactions.status', OutgoingTransactionStatus::DELIVERING)
+                ->orWhere('outgoing_transactions.status', OutgoingTransactionStatus::DELIVERED);
+        });
+    }
 }
