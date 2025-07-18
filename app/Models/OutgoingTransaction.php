@@ -25,7 +25,8 @@ class OutgoingTransaction extends Model
         'net_prices',
         'payment_method',
         'status',
-        'cancel_reason'
+        'cancel_reason',
+        'recapitulation_id'
     ];
 
     /**
@@ -71,5 +72,10 @@ class OutgoingTransaction extends Model
             $query->where('outgoing_transactions.status', OutgoingTransactionStatus::DELIVERING)
                 ->orWhere('outgoing_transactions.status', OutgoingTransactionStatus::DELIVERED);
         });
+    }
+
+    public function scopeReady(Builder $builder)
+    {
+        $builder->where('outgoing_transactions.status', OutgoingTransactionStatus::READY);
     }
 }

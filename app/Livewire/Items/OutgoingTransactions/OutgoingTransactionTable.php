@@ -2,12 +2,14 @@
 
 namespace App\Livewire\Items\OutgoingTransactions;
 
+use App\Enums\OutgoingTransactionStatus;
 use App\Models\OutgoingTransaction;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\Views\Column;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Columns\ButtonGroupColumn;
 use Rappasoft\LaravelLivewireTables\Views\Columns\LinkColumn;
+use Rappasoft\LaravelLivewireTables\Views\Filters\MultiSelectFilter;
 
 class OutgoingTransactionTable extends DataTableComponent
 {
@@ -17,7 +19,6 @@ class OutgoingTransactionTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id');
-        // TODO: add filter features, e.g. filter by status
     }
 
     public function columns(): array
@@ -34,6 +35,10 @@ class OutgoingTransactionTable extends DataTableComponent
             Column::make("Toko", "store.name")
                 ->sortable()
                 ->searchable(),
+            Column::make("Tanggal", "date")
+                ->sortable()
+                ->searchable()
+                ->format(fn($value) => $value->isoFormat('DD MMMM Y')),
             Column::make("Total Harga", "net_prices")
                 ->format(fn($value) => "Rp. " . number_format($value, 0, ',', '.'))
                 ->sortable()
@@ -60,6 +65,19 @@ class OutgoingTransactionTable extends DataTableComponent
                             ];
                         })
                 ]),
+        ];
+    }
+
+    public function filters(): array
+    {
+        $status = collect(OutgoingTransactionStatus::cases())->mapWithKeys(fn($status) => [$status->value => $status->getLabelText()])->all();
+
+        return [
+            MultiSelectFilter::make("Status")
+                ->options($status)
+                ->filter(function (Builder $builder, array $status) {
+                    $builder->whereIn('status', $status);
+                }),
         ];
     }
 

@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('item_units', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('size', 2);
             $table->timestamps();
             $table->softDeletes();
         });

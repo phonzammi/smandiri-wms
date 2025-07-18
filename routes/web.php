@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PrintRecapitulationController;
 use App\Http\Controllers\PrintSalesmanIncentiveController;
 use App\Http\Controllers\PrintSalesReportController;
 use App\Http\Controllers\ProfileController;
@@ -9,6 +10,7 @@ use App\Livewire\Items\IncomingTransactions\ShowIncomingTransaction;
 use App\Livewire\Items\ItemComponent;
 use App\Livewire\Items\OutgoingTransactions\OutgoingTransactionComponent;
 use App\Livewire\Items\OutgoingTransactions\ShowOutgoingTransaction;
+use App\Livewire\Items\Recapitulations\RecapitulationComponent;
 use App\Livewire\ItemUnits\ItemUnitComponent;
 use App\Livewire\Reports\SalesReport\SalesReportComponent;
 use App\Livewire\Reports\TopProducts\TopProductsComponent;
@@ -58,6 +60,8 @@ Route::middleware('auth')->group(function () {
             return view('bills.export', compact('outgoingTransaction'));
         })->name('bills.export');
     });
+    Route::get("/rekapitulasi-per-barang", RecapitulationComponent::class)->name('recapitulations');
+    Route::get("/rekapitulasi-per-barang/{recapitulation}/cetak", PrintRecapitulationController::class)->name('recapitulations.print');
     Route::prefix("/insentif-sales")->group(function () {
         Route::get('/', SalesmanIncentiveComponent::class)->name('salesman-incentive');
         Route::get("{salesman}/detail", ShowSalesmanIncentive::class)->name('salesman-incentive.show');
