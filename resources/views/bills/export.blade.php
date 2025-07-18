@@ -33,9 +33,12 @@
             <div class="row my-2" style="font-size: 12pt; font-family: calibri;">
                 <div class="col-8">
                     <span class="d-block"><b>UD. Sukses Mandiri</b></span>
-                    <span style="font-size: 11.5pt;">
-                        Jln. Medan - Banda Aceh Meunasah Mesjid Cunda - Kota Lhokseumawe, Telp : 0822-7216-3053
-                    </span>
+                    <p class="p-0 m-0" style="font-size: 11.5pt;">
+                        Jln. Medan - Banda Aceh Meunasah Mesjid Cunda -
+                    </p>
+                    <p class="p-0 m-0" style="font-size: 11.5pt;">
+                        Kota Lhokseumawe, Telp : 0822-7216-3053
+                    </p>
                     <table class="w-75 mt-1" border="0">
                         <tbody>
                             <tr>
@@ -131,12 +134,15 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="7" class="text-right font-weight-bold text-md">
+                            <td colspan="5" rowspan="2">
+                                Deskripsi :
+                            </td>
+                            <td class="text-right font-weight-bold text-md">
                                 Diskon : Rp. {{ number_format($outgoingTransaction->discounts, 0, ',', '.') }}
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="7" class="text-right font-weight-bold text-md">
+                            <td class="text-right font-weight-bold text-md">
                                 NETT : Rp. {{ number_format($outgoingTransaction->net_prices, 0, ',', '.') }}
                             </td>
                         </tr>
@@ -144,9 +150,14 @@
                 </tbody>
             </table>
             @if ($loop->last)
-                <div style="font-size: 11pt;" class="pt-3">
-                    <p class="text-sm">Diterima Oleh,</p>
-                    <p><u>{{ $outgoingTransaction->store->name }}</u></p>
+                <div style="font-size: 11pt;" class="pt-3 row justify-content-end">
+                    <div class="col-2">
+                        <p class="text-sm">TTD Driver/Helper,</p>
+                    </div>
+                    <div class="col-10">
+                        <p class="text-sm">Diterima Oleh,</p>
+                        <p><u>{{ $outgoingTransaction->store->name }}</u></p>
+                    </div>
                 </div>
             @endif
         </div>
