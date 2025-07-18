@@ -60,7 +60,8 @@ class OutgoingTransaction extends Model
                 'unit_price',
                 'discount',
                 'total_price',
-                'total_net_price'
+                'total_net_price',
+                'returned'
             ]);
     }
 

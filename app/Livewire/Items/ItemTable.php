@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ItemTable extends DataTableComponent
 {
-    protected $model = Item::class;
     protected $index = 0;
 
     public function configure(): void
@@ -44,6 +43,8 @@ class ItemTable extends DataTableComponent
             Column::make("Jumlah", "quantity")
                 ->sortable()
                 ->searchable(),
+            Column::make("Terjual", "sold")
+                ->sortable(),
             ButtonGroupColumn::make('Aksi')
                 ->attributes(fn($row) => ['class' => 'mx-auto'])
                 ->buttons([

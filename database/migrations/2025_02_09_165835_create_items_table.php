@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->foreignId('item_unit_id')->constrained('item_units')->cascadeOnUpdate()->cascadeOnDelete();
             $table->integer('quantity');
             $table->decimal('price', 25, 0);
+            $table->integer('sold')->nullable()->default(0);
+            $table->integer('returned')->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
