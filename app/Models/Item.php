@@ -21,6 +21,10 @@ class Item extends Model
         'price',
     ];
 
+    protected $hidden = [
+        'returned'
+    ];
+
     public function distributor(): BelongsTo
     {
         return $this->belongsTo(Distributor::class);

@@ -156,9 +156,7 @@
                         <th scope="col" class="text-right">Jumlah</th>
                         <th scope="col">Diskon</th>
                         <th scope="col">Total Harga</th>
-                        @if ($outgoingTransaction->status->isDraft())
-                            <th scope="col">Aksi</th>
-                        @endif
+                        <th scope="col">#Aksi</th>
                     </thead>
                     <tbody>
                         @foreach ($outgoingTransaction->outgoing_items as $outgoing_item)
@@ -191,14 +189,22 @@
                                         </span>
                                     </div>
                                 </td>
-                                @if ($outgoingTransaction->status->isDraft())
-                                    <td>
+                                <td>
+                                    @if ($outgoingTransaction->status->isDraft())
                                         <a href="" class="btn btn-xs btn-danger"
                                             x-on:click.prevent="$deleteItem({{ $outgoing_item->id }}, '{{ $outgoing_item->name }}')">
                                             {{ __('Delete') }}
                                         </a>
-                                    </td>
-                                @endif
+                                    @endif
+                                    @if ($outgoingTransaction->status->isDelivering() || $outgoingTransaction->status->isDelivered())
+                                        @if (!$outgoing_item->pivot->returned)
+                                            <a href="#" class="btn btn-xs btn-danger"
+                                                x-on:click.prevent="$returnItem({{ $outgoing_item->id }}, {{ $outgoing_item->pivot->quantity }})">
+                                                Return Barang
+                                            </a>
+                                        @endif
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -351,6 +357,26 @@
             $('#outgoing-item-modal').modal('hide');
             $('#outgoing-transaction-edit-modal').modal('hide');
         });
+        Alpine.magic('returnItem', () => {
+            return (id, max) => SwalDialog.fire({
+                icon: `warning`,
+                input: `number`,
+                inputLabel: `Jumlah return :`,
+                inputPlaceholder: `Jumlah return :`,
+                confirmButtonText: `Return Barang !`,
+                customClass: {
+                    confirmButton: `bg-danger`
+                },
+                inputValidator: (value) => {
+                    if (value <= 0 || value > max)
+                        return `Jumlah return hanya boleh bernilai antara 1 sampai ${max}`;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.returnItem(id, result.value)
+                }
+            })
+        });
         Alpine.magic('deleteItem', () => {
             return (id, name) => SwalDialog.fire({
                 title: `Apakah Anda yakin ingin menghapus Barang "${name}" ?`,
@@ -364,6 +390,6 @@
                     $wire.destroy(id)
                 }
             })
-        })
+        });
     </script>
 @endscript

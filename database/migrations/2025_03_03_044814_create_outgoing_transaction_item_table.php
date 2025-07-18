@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('discount', 25)->nullable()->default(0);
             $table->decimal('total_price', 25);
             $table->decimal('total_net_price', 25);
+            $table->integer('returned')->nullable()->default(0);
             $table->primary(['outgoing_transaction_id', 'item_id']);
             $table->timestamps();
         });

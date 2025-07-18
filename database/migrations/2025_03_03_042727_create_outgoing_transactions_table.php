@@ -21,8 +21,8 @@ return new class extends Migration
             $table->decimal('prices', 25, 0)->default(0);
             $table->decimal('discounts', 25, 0)->default(0);
             $table->decimal('net_prices', 25, 0)->default(0);
-            $table->string('payment_method', 20);
             $table->string('status', 20)->default('draft');
+            $table->string('payment_method', 20);
             $table->string('cancel_reason')->nullable()->default(NULL);
             $table->timestamps();
             $table->softDeletes();

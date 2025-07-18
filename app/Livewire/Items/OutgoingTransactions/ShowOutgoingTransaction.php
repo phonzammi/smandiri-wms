@@ -38,15 +38,17 @@ class ShowOutgoingTransaction extends Component
 
         $quantity = $validated['quantity'];
         $discount = $validated['discount'];
-        $total_price = $this->selectedItem->price * $quantity;
+        $price = $this->selectedItem->price;
+        $total_price = $price * $quantity;
         $total_net_price = $total_price - $discount;
-        $this->selectedItem->quantity -= $quantity;
 
-        DB::transaction(function () use ($quantity, $discount, $total_price, $total_net_price) {
+        DB::transaction(function () use ($quantity, $discount, $price, $total_price, $total_net_price) {
+            $this->selectedItem->quantity -= $quantity;
+            $this->selectedItem->sold += $quantity;
             $this->selectedItem->save();
             $this->outgoingTransaction->outgoing_items()->attach($this->selectedItem->id, [
                 'quantity' => $quantity,
-                'unit_price' => $this->selectedItem->price,
+                'unit_price' => $price,
                 'discount' => $discount,
                 'total_price' => $total_price,
                 'total_net_price' => $total_net_price,
@@ -104,12 +106,54 @@ class ShowOutgoingTransaction extends Component
         }
     }
 
+    public function returnItem(Item $item, int $return_amount)
+    {
+        if ($this->outgoingTransaction->status->isDelivering() || $this->outgoingTransaction->status->isDelivered()) {
+            $item->loadMissing('itemUnit');
+            $outgoing_item = $this->outgoingTransaction->outgoing_items->find($item->id);
+            if ($return_amount <= 0 || $return_amount > $outgoing_item->pivot->quantity) {
+                $this->dispatch('toast-message', props: [
+                    'icon' => 'error',
+                    'text' => 'Jumlah return hanya boleh bernilai antara 1 sampai ' . $outgoing_item->pivot->quantity,
+                ]);
+                return;
+            }
+            $quantity = $outgoing_item->pivot->quantity - $return_amount;
+            $returned = $outgoing_item->pivot->returned + $return_amount;
+            $total_price = $item->price * $quantity;
+            $total_net_price = $total_price - $outgoing_item->pivot->discount;
+
+            DB::transaction(function () use ($outgoing_item, $item, $quantity, $returned, $return_amount, $total_price, $total_net_price) {
+                if ($outgoing_item) {
+                    $item->sold -= $return_amount;
+                    if ($item->sold < 0) {
+                        $item->sold = 0;
+                    }
+                    $item->returned += $return_amount;
+                    $item->save();
+                    $this->outgoingTransaction->outgoing_items()->updateExistingPivot($item->id, [
+                        'quantity' => $quantity,
+                        'returned' => $returned,
+                        'total_price' => $total_price,
+                        'total_net_price' => $total_net_price
+                    ]);
+                }
+            });
+            $this->dispatch('toast-message', props: [
+                'icon' => 'success',
+                'text' => "Barang $item->name telah di return sebanyak $return_amount {$item->itemUnit->name}.",
+            ]);
+            $this->dispatch('refresh');
+        }
+    }
+
     public function cancel(string $reason = '')
     {
         if (!$this->outgoingTransaction->status->isCanceled()) {
             foreach ($this->outgoingTransaction->outgoing_items as $outgoingItem) {
                 $item = Item::find($outgoingItem->id);
                 $item->quantity += $outgoingItem->pivot->quantity;
+                $item->sold -= $outgoingItem->pivot->quantity;
                 $item->save();
             }
             $this->outgoingTransaction->update([
@@ -139,6 +183,7 @@ class ShowOutgoingTransaction extends Component
             if ($outgoing_item) {
                 $this->outgoingTransaction->outgoing_items()->detach($item->id);
                 $item->quantity += $outgoing_item->pivot->quantity;
+                $item->sold -= $outgoing_item->pivot->quantity;
                 $item->save();
             }
         });
