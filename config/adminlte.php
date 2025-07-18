@@ -354,8 +354,19 @@ return [
         ],
         [
             'text' => 'Transaksi Penjualan',
-            'route' => 'outgoing-transactions',
             'icon' => 'fas fa-fw fa-paste',
+            'submenu' => [
+                [
+                    'text' => 'Transaksi Penjualan',
+                    'route' => 'outgoing-transactions',
+                    'icon' => 'fas fa-fw fa-paste',
+                ],
+                [
+                    'text' => 'Rekapitulasi Per Barang',
+                    'route' => 'recapitulations',
+                    'icon' => 'fas fa-fw fa-paste',
+                ]
+            ]
         ],
         [
             'text' => 'Laporan',
@@ -459,7 +470,7 @@ return [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js',
+                    'location' => '//cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js',
                 ],
             ],
         ],

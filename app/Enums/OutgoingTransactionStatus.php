@@ -39,7 +39,7 @@ enum OutgoingTransactionStatus: string
     {
         return match ($this) {
             self::DRAFT => 'Belum Siap',
-            self::READY => 'Siap Diantar',
+            self::READY => 'Siap Direkap/Diantar',
             self::DELIVERING => 'Sedang Diantar',
             self::DELIVERED => 'Sampai Diantar',
             self::CANCELED => 'Dibatalkan',
