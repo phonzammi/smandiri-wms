@@ -93,8 +93,12 @@
         @endforeach
         <table style='width:700; font-size:11pt; margin-top: -20px' cellspacing='2'>
             <tr>
-                <td align='left'>Diterima Oleh,</br></br></br><u>{{ $outgoingTransaction->store->name }}</u></td>
-                <td align=''></br></br><u></u></td>
+                <td>TTD Driver/Helper,</td>
+                <td align='left'>Diterima Oleh,</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><u>{{ $outgoingTransaction->store->name }}</u></td>
             </tr>
         </table>
     </center>
