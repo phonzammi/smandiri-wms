@@ -22,7 +22,7 @@
 
         table td {
             vertical-align: top !important;
-            font-size: 12pt !important;
+            padding: 2px;
         }
     </style>
 </head>
@@ -31,15 +31,15 @@
     @foreach ($outgoingTransaction->outgoing_items->chunk(15) as $chunk)
         <div class="page">
             <div class="row my-2" style="font-size: 12pt; font-family: calibri;">
-                <div class="col-8">
-                    <span class="d-block"><b>UD. Sukses Mandiri</b></span>
+                <div class="col-8" style="font-weight: 570;">
+                    <span class="d-block text-lg"><b>UD. Sukses Mandiri</b></span>
                     <p class="p-0 m-0" style="font-size: 11.5pt;">
                         Jln. Medan - Banda Aceh Meunasah Mesjid Cunda -
                     </p>
                     <p class="p-0 m-0" style="font-size: 11.5pt;">
                         Kota Lhokseumawe, Telp : 0822-7216-3053
                     </p>
-                    <table class="w-75 mt-1" border="0">
+                    <table class="w-75 mt-1" style="font-weight: 570;" border="0">
                         <tbody>
                             <tr>
                                 <td class="w-25">Sales</td>
@@ -53,8 +53,8 @@
                     </table>
                 </div>
                 <div class="col-4">
-                    <span class="d-block"><b>FAKTUR PENJUALAN</b></span>
-                    <table class="w-100" border="0">
+                    <span class="d-block text-lg"><b>FAKTUR PENJUALAN</b></span>
+                    <table class="w-100" style="font-weight: 570;" border="0">
                         <tbody>
                             <tr>
                                 <td class="w-25">No Trans.</td>
@@ -80,7 +80,8 @@
                     </table>
                 </div>
             </div>
-            <table class="w-100" style='font-size: 12pt; font-family: calibri; border-spacing: 0;' border="1">
+            <table class="w-100" style='font-size: 14pt; font-family: calibri; border-spacing: 0; font-weight: 570;'
+                border="1">
                 <thead class="text-center">
                     <tr>
                         <th scope="col">Barang</th>
@@ -124,38 +125,62 @@
                         </tr>
                     @endforeach
                     @if ($loop->last)
-                        <tr class="font-weight-bold text-md">
+                        <tr class="font-weight-bold ">
                             <td colspan="1" class="text-right pr-2">Jumlah :</td>
                             <td class="text-center">
                                 {{ $outgoingTransaction->outgoing_items->sum('pivot.quantity') }}
                             </td>
-                            <td colspan="4" class="text-right">
-                                Total : Rp. {{ number_format($outgoingTransaction->prices, 0, ',', '.') }}
+                            <td colspan="3" class="text-right" style="border-right: 1px solid transparent">
+                                Total :
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    <span>Rp.</span>
+                                    <span>
+                                        {{ number_format($outgoingTransaction->prices, 0, ',', '.') }}
+                                    </span>
+                                </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="5" rowspan="2">
+                        <tr class="font-weight-bold">
+                            <td colspan="4" rowspan="2">
                                 Deskripsi :
                             </td>
-                            <td class="text-right font-weight-bold text-md">
-                                Diskon : Rp. {{ number_format($outgoingTransaction->discounts, 0, ',', '.') }}
+                            <td class="text-right " style="border-right: 1px solid transparent">
+                                Diskon :
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    <span>Rp.</span>
+                                    <span>
+                                        {{ number_format($outgoingTransaction->discounts, 0, ',', '.') }}
+                                    </span>
+                                </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="text-right font-weight-bold text-md">
-                                NETT : Rp. {{ number_format($outgoingTransaction->net_prices, 0, ',', '.') }}
+                        <tr class="font-weight-bold">
+                            <td class="text-right " style="border-right: 1px solid transparent">
+                                NETT :
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-between">
+                                    <span>Rp.</span>
+                                    <span>
+                                        {{ number_format($outgoingTransaction->net_prices, 0, ',', '.') }}
+                                    </span>
+                                </div>
                             </td>
                         </tr>
                     @endif
                 </tbody>
             </table>
             @if ($loop->last)
-                <div style="font-size: 11pt;" class="pt-3 row justify-content-end">
+                <div class="pt-3 row justify-content-end" style="font-size:12pt; font-weight: 570;">
                     <div class="col-2">
-                        <p class="text-sm">TTD Driver/Helper,</p>
+                        <p>TTD Driver/Helper,</p>
                     </div>
                     <div class="col-10">
-                        <p class="text-sm">Diterima Oleh,</p>
+                        <p>Diterima Oleh,</p>
                         <p><u>{{ $outgoingTransaction->store->name }}</u></p>
                     </div>
                 </div>
