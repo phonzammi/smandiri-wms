@@ -41,7 +41,7 @@
                     Pembayaran : {{ $outgoingTransaction->payment_method->name }} </td>
             </table>
             <table cellspacing='0'
-                style='width:700px; font-size:12pt; font-family:calibri;  border-collapse: collapse; margin-top: 5px; margin-bottom:30px;'
+                style='width:700px; font-size:12pt; font-family:calibri;  border-collapse: collapse; margin-top: 5px; margin-bottom:20px;'
                 border='1'>
                 <thead>
                     <tr align='center'>
@@ -57,48 +57,96 @@
                     @foreach ($chunk as $outgoing_item)
                         <tr>
                             <td>{{ $outgoing_item->name }}</td>
-                            <td>{{ $outgoing_item->pivot->quantity }}</td>
+                            <td style="text-align: center;">{{ $outgoing_item->pivot->quantity }}</td>
                             <td>{{ $outgoing_item->itemUnit->name }}</td>
                             <td>
-                                Rp. {{ number_format($outgoing_item->pivot->unit_price, 0, ',', '.') }}
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
+                                    <span>Rp. </span>
+                                    <span>
+                                        {{ number_format($outgoing_item->pivot->unit_price, 0, ',', '.') }}
+                                    </span>
+                                </div>
                             </td>
                             <td>
-                                Rp. {{ number_format($outgoing_item->pivot->discount, 0, ',', '.') }}
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
+                                    <span>Rp. </span>
+                                    <span>
+                                        {{ number_format($outgoing_item->pivot->discount, 0, ',', '.') }}
+                                    </span>
+                                </div>
                             </td>
                             <td>
-                                Rp. {{ number_format($outgoing_item->pivot->total_price, 0, ',', '.') }}
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
+                                    <span>Rp. </span>
+                                    <span>
+                                        {{ number_format($outgoing_item->pivot->total_price, 0, ',', '.') }}
+                                    </span>
+                                </div>
                             </td>
                         </tr>
                     @endforeach
                     @if ($loop->last)
                         <tr>
                             <td colspan="1" style="text-align: right; font-size:medium;">Jumlah : </td>
-                            <td style="font-size:medium;">
+                            <td style="font-size:medium; text-align: center">
                                 <b>{{ $outgoingTransaction->outgoing_items->sum('pivot.quantity') }}</b>
                             </td>
-                            <td colspan="4" style="text-align: right; font-size:18px;">Total : Rp.
-                                {{ number_format($outgoingTransaction->prices, 0, ',', '.') }}</td>
+                            <td colspan="3"
+                                style="text-align: right; font-size:18px; border-right-color: transparent;">
+                                Total :
+                            </td>
+                            <td>
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
+                                    <span>Rp.</span>
+                                    <span>
+                                        {{ number_format($outgoingTransaction->prices, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
-                            <td colspan="7" style="text-align: right; font-size:18px;">Diskon : Rp.
-                                {{ number_format($outgoingTransaction->discounts, 0, ',', '.') }}</td>
+                            <td colspan="4" rowspan="2" style="vertical-align: top;">
+                                Deskripsi :
+                            </td>
+                            <td style="text-align: right; font-size:18px; border-right-color: transparent;">
+                                Diskon :
+                            </td>
+                            <td>
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
+                                    <span>Rp.</span>
+                                    <span>
+                                        {{ number_format($outgoingTransaction->discounts, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            </td>
                         </tr>
                         <tr>
-                            <td colspan="7" style="text-align: right; font-size:18px;">NETT : Rp.
-                                {{ number_format($outgoingTransaction->net_prices, 0, ',', '.') }}</td>
+                            <td style="text-align: right; font-size:18px; border-right-color: transparent;">
+                                NETT :
+                            </td>
+                            <td>
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
+                                    <span>Rp.</span>
+                                    <span>
+                                        {{ number_format($outgoingTransaction->net_prices, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            </td>
                         </tr>
                     @endif
                 </tbody>
             </table>
         @endforeach
-        <table style='width:700; font-size:11pt; margin-top: -20px' cellspacing='2'>
+        <table style='width:700; font-size:11pt;' cellspacing='2'>
             <tr>
                 <td>TTD Driver/Helper,</td>
                 <td align='left'>Diterima Oleh,</td>
             </tr>
             <tr>
                 <td></td>
-                <td><u>{{ $outgoingTransaction->store->name }}</u></td>
+                <td style="padding-top: 30px;">
+                    <u>{{ $outgoingTransaction->store->name }}</u>
+                </td>
             </tr>
         </table>
     </center>

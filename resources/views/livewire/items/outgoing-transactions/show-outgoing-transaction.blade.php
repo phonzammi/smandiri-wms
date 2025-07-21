@@ -152,6 +152,7 @@
                         <th scope="col">No.</th>
                         <th scope="col">Kode Barang</th>
                         <th scope="col">Nama Barang</th>
+                        <th scope="col">Satuan</th>
                         <th scope="col" style="width: 10%">Harga Satuan</th>
                         <th scope="col" class="text-right">Jumlah</th>
                         <th scope="col">Diskon</th>
@@ -164,6 +165,7 @@
                                 <th scope=row>{{ $loop->iteration }}</th>
                                 <td>{{ $outgoing_item->code }}</td>
                                 <td class="text-nowrap">{{ $outgoing_item->name }}</td>
+                                <td class="text-nowrap">{{ $outgoing_item->itemUnit->name }}</td>
                                 <td>
                                     <div class="d-flex flex-nowrap justify-content-between">
                                         <span>Rp. </span>
