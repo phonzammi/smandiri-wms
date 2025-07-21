@@ -139,8 +139,8 @@
         @endforeach
         <table style='width:700; font-size:11pt;' cellspacing='2'>
             <tr>
-                <td>TTD Driver/Helper,</td>
-                <td align='left'>Diterima Oleh,</td>
+                <td style="width: 25%;">TTD Driver/Helper,</td>
+                <td>Diterima Oleh,</td>
             </tr>
             <tr>
                 <td></td>
