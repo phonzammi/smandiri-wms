@@ -26,7 +26,9 @@ class ShowOutgoingTransaction extends Component
 
     public function mount()
     {
-        $this->outgoingTransaction->loadMissing(['outgoing_items', 'salesman', 'store']);
+        $this->outgoingTransaction->loadMissing(['outgoing_items' => function ($query) {
+            $query->with('itemUnit');
+        }, 'salesman', 'store']);
         $this->distributors = Distributor::select(["id", "name"])->get();
         $this->items = Item::select(["id", "distributor_id", "name"])->get()->toArray();
         $this->initial_items_count = count($this->items);
