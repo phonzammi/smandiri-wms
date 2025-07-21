@@ -15,74 +15,54 @@
                 break-after: page;
             }
         }
-
-        table {
-            border-collapse: collapse;
-        }
-
-        table td {
-            vertical-align: top !important;
-            padding: 2px;
-        }
     </style>
 </head>
 
-<body style='width: 1056px; font-family: tahoma; font-size: 12pt;' class="mx-auto">
+<body style='width: 700px; font-family: tahoma; font-size: 12pt;' class="mx-auto">
     @foreach ($outgoingTransaction->outgoing_items->chunk(15) as $chunk)
         <div class="page">
-            <div class="row my-2" style="font-size: 12pt; font-family: calibri;">
-                <div class="col-8" style="font-weight: 570;">
-                    <span class="d-block text-lg"><b>UD. Sukses Mandiri</b></span>
-                    <p class="p-0 m-0" style="font-size: 11.5pt;">
-                        Jln. Medan - Banda Aceh Meunasah Mesjid Cunda -
-                    </p>
-                    <p class="p-0 m-0" style="font-size: 11.5pt;">
-                        Kota Lhokseumawe, Telp : 0822-7216-3053
-                    </p>
-                    <table class="w-75 mt-1" style="font-weight: 570;" border="0">
-                        <tbody>
-                            <tr>
-                                <td class="w-25">Sales</td>
-                                <td>: {{ $outgoingTransaction->salesman->name }}</td>
-                            </tr>
-                            <tr>
-                                <td class="w-25">No. Telp</td>
-                                <td>: {{ $outgoingTransaction->salesman->phone }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-4">
-                    <span class="d-block text-lg"><b>FAKTUR PENJUALAN</b></span>
-                    <table class="w-100" style="font-weight: 570;" border="0">
-                        <tbody>
-                            <tr>
-                                <td class="w-25">No Trans.</td>
-                                <td>: {{ $outgoingTransaction->invoice_code }}</td>
-                            </tr>
-                            <tr>
-                                <td class="w-25">Tanggal</td>
-                                <td>: {{ $outgoingTransaction->date->isoFormat('DD MMMM Y') }}</td>
-                            </tr>
-                            <tr>
-                                <td class="w-25">Toko</td>
-                                <td>: {{ $outgoingTransaction->store->name }}</td>
-                            </tr>
-                            <tr>
-                                <td class="w-25">Alamat</td>
-                                <td>: {{ $outgoingTransaction->store->address }}</td>
-                            </tr>
-                            <tr>
-                                <td class="w-25">Pembayaran</td>
-                                <td>: {{ $outgoingTransaction->payment_method->name }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <table class="w-100" style='font-size: 14pt; font-family: calibri; border-spacing: 0; font-weight: 570;'
+            <table style="font-family: calibri; width: 100%; border-collapse: collapse;" class="my-2">
+                <tbody>
+                    <tr>
+                        <th colspan="2" style="max-width: 60%;">UD. Sukses Mandiri</th>
+                        <th colspan="2">FAKTUR PENJUALAN</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="font-size: 11.5pt;">
+                            Jln. Medan - Banda Aceh Meunasah Mesjid Cunda,
+                        </td>
+                        <td>No Trans.</td>
+                        <td>: {{ $outgoingTransaction->invoice_code }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Kota Lhokseumawe, Telp : 0822-7216-3053</td>
+                        <td>Tanggal</td>
+                        <td>: {{ $outgoingTransaction->date->isoFormat('DD MMMM Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 10%;">Sales</td>
+                        <td>: {{ $outgoingTransaction->salesman->name }}</td>
+                        <td>Toko</td>
+                        <td>: {{ $outgoingTransaction->store->name }}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 10%;">No. Telp</td>
+                        <td>: {{ $outgoingTransaction->salesman->phone }}</td>
+                        <td>Alamat</td>
+                        <td>: {{ $outgoingTransaction->store->address }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>Pembayaran</td>
+                        <td>: {{ $outgoingTransaction->payment_method->name }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <table
+                style='width: 100%; font-size: 12pt; font-family: calibri; border-collapse: collapse; font-weight: 570;'
                 border="1">
-                <thead class="text-center">
+                <thead style="text-align: center;">
                     <tr>
                         <th scope="col">Barang</th>
                         <th scope="col">Jumlah</th>
@@ -96,26 +76,26 @@
                     @foreach ($chunk as $outgoing_item)
                         <tr>
                             <td>{{ $outgoing_item->name }}</td>
-                            <td class="text-center">{{ $outgoing_item->pivot->quantity }}</td>
-                            <td class="text-center">{{ $outgoing_item->itemUnit->name }}</td>
-                            <td class="text-right">
-                                <div class="d-flex flex-nowrap justify-content-between">
+                            <td style="text-align: center;">{{ $outgoing_item->pivot->quantity }}</td>
+                            <td style="font-size: 11pt;">{{ $outgoing_item->itemUnit->name }}</td>
+                            <td>
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
                                     <span>Rp. </span>
                                     <span>
                                         {{ number_format($outgoing_item->pivot->unit_price, 0, ',', '.') }}
                                     </span>
                                 </div>
                             </td>
-                            <td class="text-right">
-                                <div class="d-flex flex-nowrap justify-content-between">
+                            <td>
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
                                     <span>Rp. </span>
                                     <span>
                                         {{ number_format($outgoing_item->pivot->discount, 0, ',', '.') }}
                                     </span>
                                 </div>
                             </td>
-                            <td class="text-right">
-                                <div class="d-flex flex-nowrap justify-content-between">
+                            <td>
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
                                     <span>Rp. </span>
                                     <span>
                                         {{ number_format($outgoing_item->pivot->total_price, 0, ',', '.') }}
@@ -125,16 +105,18 @@
                         </tr>
                     @endforeach
                     @if ($loop->last)
-                        <tr class="font-weight-bold ">
-                            <td colspan="1" class="text-right pr-2">Jumlah :</td>
-                            <td class="text-center">
+                        <tr style="font-size: medium; font-weight: 700;">
+                            <td colspan="1" style="text-align: right; padding-right: 8px;">
+                                Jumlah :
+                            </td>
+                            <td style="text-align: center;">
                                 {{ $outgoingTransaction->outgoing_items->sum('pivot.quantity') }}
                             </td>
-                            <td colspan="3" class="text-right" style="border-right: 1px solid transparent">
+                            <td colspan="3" style="text-align: right; border-right-color: transparent">
                                 Total :
                             </td>
                             <td>
-                                <div class="d-flex justify-content-between">
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
                                     <span>Rp.</span>
                                     <span>
                                         {{ number_format($outgoingTransaction->prices, 0, ',', '.') }}
@@ -142,15 +124,15 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr class="font-weight-bold">
-                            <td colspan="4" rowspan="2">
+                        <tr style="font-size: medium; font-weight: 700;">
+                            <td colspan="4" rowspan="2" style="vertical-align: top;">
                                 Deskripsi :
                             </td>
-                            <td class="text-right " style="border-right: 1px solid transparent">
+                            <td style="text-align: right; border-right-color: transparent">
                                 Diskon :
                             </td>
                             <td>
-                                <div class="d-flex justify-content-between">
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
                                     <span>Rp.</span>
                                     <span>
                                         {{ number_format($outgoingTransaction->discounts, 0, ',', '.') }}
@@ -158,12 +140,12 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr class="font-weight-bold">
-                            <td class="text-right " style="border-right: 1px solid transparent">
+                        <tr style="font-size: medium; font-weight: 700;">
+                            <td style="text-align: right; border-right-color: transparent">
                                 NETT :
                             </td>
                             <td>
-                                <div class="d-flex justify-content-between">
+                                <div style="display: flex; flex-wrap: nowrap; justify-content: space-between;">
                                     <span>Rp.</span>
                                     <span>
                                         {{ number_format($outgoingTransaction->net_prices, 0, ',', '.') }}
@@ -175,15 +157,22 @@
                 </tbody>
             </table>
             @if ($loop->last)
-                <div class="pt-3 row justify-content-end" style="font-size:12pt; font-weight: 570;">
-                    <div class="col-2">
-                        <p>TTD Driver/Helper,</p>
-                    </div>
-                    <div class="col-10">
-                        <p>Diterima Oleh,</p>
-                        <p><u>{{ $outgoingTransaction->store->name }}</u></p>
-                    </div>
-                </div>
+                <table style="width:50%; font-size: 11pt; margin-top: 20px" cellspacing='2'>
+                    <tbody>
+                        <tr>
+                            <th>TTD Driver/Helper,</th>
+                            <th>Diterima Oleh,</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td style="padding-top: 30px;">
+                                <u>
+                                    {{ $outgoingTransaction->store->name }}
+                                </u>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             @endif
         </div>
     @endforeach
