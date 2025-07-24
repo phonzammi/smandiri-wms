@@ -61,7 +61,9 @@ Route::middleware('auth')->group(function () {
         })->name('bills.export');
     });
     Route::get("/rekapitulasi-per-barang", RecapitulationComponent::class)->name('recapitulations');
-    Route::get("/rekapitulasi-per-barang/{recapitulation}/cetak", PrintRecapitulationController::class)->name('recapitulations.print');
+    Route::get("/rekapitulasi-per-barang/{recapitulation}/cetak", [PrintRecapitulationController::class, 'printAll'])->name('recapitulations.print-all');
+    Route::get("/rekapitulasi-per-barang/{recapitulationId}/cetak/{salesmanId}", [PrintRecapitulationController::class, 'printBySalesman'])->name('recapitulations.print-by-salesman');
+
     Route::prefix("/insentif-sales")->group(function () {
         Route::get('/', SalesmanIncentiveComponent::class)->name('salesman-incentive');
         Route::get("{salesman}/detail", ShowSalesmanIncentive::class)->name('salesman-incentive.show');

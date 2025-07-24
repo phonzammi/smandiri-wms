@@ -2,175 +2,143 @@
 
 <head>
     <title>Rekapitulasi Per Barang</title>
-
-    <link rel="stylesheet" href="{{ asset('vendor/adminlte/dist/css/adminlte.min.css') }}">
-    <style>
-        @media print {
-            @page {
-                /* size: 9.5in 11in; */
-                size: portrait;
-            }
-
-            .page {
-                break-after: page;
-            }
-        }
-
-        table {
-            border-collapse: collapse;
-        }
-
-        table td {
-            vertical-align: top !important;
-            font-size: 12pt !important;
-        }
-    </style>
 </head>
 
-<body style='width: 1056px; font-family: tahoma; font-size: 12pt;' class="mx-auto">
-
-    <div class="page">
-        <div class="row my-2" style="font-size: 12pt; font-family: calibri;">
-            <div class="col-8">
-                <span class="d-block"><b>UD. Sukses Mandiri</b></span>
-                <p class="p-0 m-0" style="font-size: 11.5pt;">
-                    Jln. Medan - Banda Aceh Meunasah Mesjid Cunda -
-                </p>
-                <p class="p-0 m-0" style="font-size: 11.5pt;">
-                    Kota Lhokseumawe, Telp : 0822-7216-3053
-                </p>
-                <table class="w-75 mt-1" border="0">
-                    <tbody>
-                        <tr>
-                            <td class="w-25">Kendaraan</td>
-                            <td>: {{ $recapitulation->license_plate }}</td>
-                        </tr>
-                        <tr>
-                            <td class="w-25">Supir</td>
-                            <td>: {{ $recapitulation->driver }}</td>
-                        </tr>
-                        <tr>
-                            <td class="w-25">Helper</td>
-                            <td>: {{ $recapitulation->helper }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-4">
-                <span class="d-block"><b>REKAPITULASI PER BARANG</b></span>
-                <table class="w-100" border="0">
-                    <tbody>
-                        <tr>
-                            <td class="">Kode Rekapitulasi</td>
-                            <td>: {{ $recapitulation->recapitulation_code }}</td>
-                        </tr>
-                        <tr>
-                            <td class="">Tanggal</td>
-                            <td>: {{ $recapitulation->date->isoFormat('DD MMMM Y') }}</td>
-                        </tr>
-                        <tr>
-                            <td class="">Jumlah Salesman</td>
-                            <td>: {{ $recapitulation->salesman_count }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <table class="w-100" style='font-size: 12pt; font-family: calibri; border-spacing: 0;' border="1">
-            <thead class="text-center">
-                <tr>
-                    <th scope="col">Nama Barang</th>
-                    <th scope="col">Besar</th>
-                    <th scope="col">Tengah</th>
-                    <th scope="col">Kecil</th>
-                    <th scope="col">Terkirim</th>
-                    <th scope="col">Tidak Terkirim</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($recapitulation->items as $item)
+<body style='width: 1024px; font-family: tahoma; font-size: 12pt; margin: 0 auto;'>
+    <div style="display:flex; font-size: 12pt; justify-content: space-between; font-family: calibri; margin: 8px 0">
+        <div>
+            <span style='font-size:12pt'><b>UD. Sukses Mandiri</b></span>
+            <p style="padding:0; margin:0; font-size: 11.5pt; line-height: 1.2;">
+                Jln. Medan - Banda Aceh Meunasah Mesjid Cunda,
+            </p>
+            <p style="padding:0; margin:0; font-size: 11.5pt; line-height: 1.2;">
+                Kota Lhokseumawe, Telp : 0822-7216-3053
+            </p>
+            <table style="margin-top: 4px" border="0">
+                <tbody>
                     <tr>
-                        <td>{{ $item->name }}</td>
-                        <td class="text-center">
-                            {{ $item->itemUnit->size->isLarge() ? $item->pivot->quantity : '' }}
-                        </td>
-                        <td class="text-center">
-                            {{ $item->itemUnit->size->isMedium() ? $item->pivot->quantity : '' }}
-                        </td>
-                        <td class="text-center">
-                            {{ $item->itemUnit->size->isSmall() ? $item->pivot->quantity : '' }}
-                        </td>
-                        <td></td>
-                        <td></td>
+                        <td>Kendaraan</td>
+                        <td>: {{ $recapitulation->license_plate }}</td>
                     </tr>
-                @endforeach
+                    <tr>
+                        <td>Supir</td>
+                        <td>: {{ $recapitulation->driver }}</td>
+                    </tr>
+                    <tr>
+                        <td>Helper</td>
+                        <td>: {{ $recapitulation->helper }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <span style='font-size:12pt'><b>REKAPITULASI PER BARANG</b></span></br>
+            <table border="0">
+                <tbody>
+                    <tr>
+                        <td>Kode Rekapitulasi</td>
+                        <td>: {{ $recapitulation->recapitulation_code }}</td>
+                    </tr>
+                    <tr>
+                        <td>Tanggal</td>
+                        <td>: {{ $recapitulation->date->isoFormat('DD MMMM Y') }}</td>
+                    </tr>
+                    <tr>
+                        <td>Jumlah Salesman</td>
+                        <td>: {{ $recapitulation->salesman_count }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <table cellspacing='0' style='width: 100%; font-size: 12pt; font-family: calibri; border-collapse: collapse;'
+        border="1">
+        <thead style="text-align: center;">
+            <tr>
+                <th scope="col">No.</th>
+                <th scope="col">Nama Barang</th>
+                <th scope="col">Besar</th>
+                <th scope="col">Tengah</th>
+                <th scope="col">Kecil</th>
+                <th scope="col">Terkirim</th>
+                <th scope="col">Tidak Terkirim</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($recapitulation->items as $item)
+                <tr>
+                    <th style="text-align: center;" scope=row>{{ $loop->iteration }}.</th>
+                    <td>{{ $item->name }}</td>
+                    <td style="text-align: center;">
+                        {{ $item->itemUnit->size->isLarge() ? $item->total_quantity : '' }}
+                    </td>
+                    <td style="text-align: center;">
+                        {{ $item->itemUnit->size->isMedium() ? $item->total_quantity : '' }}
+                    </td>
+                    <td style="text-align: center;">
+                        {{ $item->itemUnit->size->isSmall() ? $item->total_quantity : '' }}
+                    </td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <div
+        style="display: flex; justify-content: space-evenly; align-items: flex-start; font-family: calibri; margin: 8px 0;">
+        <table border="0">
+            <tbody style="font-weight: bold; font-size: medium;">
+                <tr>
+                    <td>Total Barang</td>
+                    <td>: {{ $recapitulation->items->sum('total_quantity') }}</td>
+                </tr>
             </tbody>
         </table>
 
-        <div class="row my-2" style="font-family: calibri;">
-            <div class="col-6">
-                <table class="w-100" border="0">
-                    <tbody class="font-weight-bold text-md">
-                        <tr>
-                            <td class="w-25">Total Barang</td>
-                            <td>: {{ $recapitulation->items->sum('pivot.quantity') }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-4">
-                <table class="w-100" border="0">
-                    <tbody class="font-weight-bold text-md">
-                        <tr>
-                            <td class="">Total Faktur</td>
-                            <td>: {{ $recapitulation->outgoing_transactions->count() }}</td>
-                        </tr>
-                        <tr>
-                            <td class="">Total Bruto</td>
-                            <td style="width:45%">
-                                <div class="d-flex justify-content-between">
-                                    <span>: Rp.</span>
-                                    <span>{{ number_format($recapitulation->outgoing_transactions->sum('prices'), 0, ',', '.') }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Total Diskon</td>
-                            <td style="width:45%">
-                                <div class="d-flex justify-content-between">
-                                    <span>: Rp.</span>
-                                    <span>{{ number_format($recapitulation->outgoing_transactions->sum('discounts'), 0, ',', '.') }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="">Total Neto</td>
-                            <td style="width:45%">
-                                <div class="d-flex justify-content-between">
-                                    <span>: Rp.</span>
-                                    <span>{{ number_format($recapitulation->outgoing_transactions->sum('net_prices'), 0, ',', '.') }}</span>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div style="font-size: 11pt;" class="pt-3 row justify-content-end">
-            <div class="col-4">
-                <p class="text-sm">Diperiksa oleh,</p>
-            </div>
-            <div class="col-4">
-                <p class="text-sm">Diterima oleh,</p>
-            </div>
-            <div class="col-4">
-                <p class="text-sm">Diterima kembali,</p>
-                <p><u></u></p>
-            </div>
-        </div>
-
+        <table border="0">
+            <tbody style="font-weight: bold; font-size: medium;">
+                <tr>
+                    <td>Total Faktur</td>
+                    <td>:
+                        {{ $recapitulation->outgoing_transaction_count }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>Total Bruto</td>
+                    <td>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="margin-right: 8px;">: Rp.</span>
+                            <span>{{ number_format($recapitulation->total_price, 0, ',', '.') }}</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Total Diskon</td>
+                    <td>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="margin-right: 8px;">: Rp.</span>
+                            <span>{{ number_format($recapitulation->total_discount, 0, ',', '.') }}</span>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Total Neto</td>
+                    <td>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="margin-right: 8px;">: Rp.</span>
+                            <span>{{ number_format($recapitulation->total_net_price, 0, ',', '.') }}</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
+    <div style="font-size: 11pt; display: flex; justify-content: space-evenly; flex-wrap: nowrap; padding-top: 16px;">
+        <p>Diperiksa oleh,</p>
+        <p>Diterima oleh,</p>
+        <p>Diterima kembali,</p>
+    </div>
 </body>
 
 </html>

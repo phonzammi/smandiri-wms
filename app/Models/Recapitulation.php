@@ -18,6 +18,7 @@ class Recapitulation extends Model
         'driver',
         'helper',
         'license_plate',
+        'outgoing_transaction_count',
         'salesman_count'
     ];
 
@@ -46,6 +47,12 @@ class Recapitulation extends Model
     public function items(): BelongsToMany
     {
         return $this->belongsToMany(Item::class, 'recapitulation_item')
-            ->withPivot(['quantity']);
+            ->withPivot([
+                'salesman_id',
+                'total_quantity',
+                'total_price',
+                'total_discount',
+                'total_net_price',
+            ]);
     }
 }

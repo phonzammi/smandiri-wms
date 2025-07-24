@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('driver', 50);
             $table->string('helper', 50);
             $table->string('license_plate', 50);
+            $table->integer('outgoing_transaction_count');
             $table->integer('salesman_count');
             $table->timestamps();
             $table->softDeletes();
