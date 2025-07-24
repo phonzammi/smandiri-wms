@@ -5,6 +5,7 @@ namespace App\Livewire\Items\Recapitulations;
 use App\Enums\OutgoingTransactionStatus;
 use App\Models\OutgoingTransaction;
 use App\Models\Recapitulation;
+use App\Models\Salesman;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
@@ -29,7 +30,8 @@ class RecapitulationComponent extends Component
         $new_recapitulation = Recapitulation::create([
             ...$validated,
             "recapitulation_code" => $recapitulation_code,
-            'salesman_count' => $salesman_count
+            'outgoing_transaction_count' => $outgoing_transactions->count(),
+            'salesman_count' => $salesman_count,
         ]);
 
         foreach ($outgoing_transactions as $outgoing_transaction) {
@@ -51,17 +53,35 @@ class RecapitulationComponent extends Component
 
     public function attachRecapitulationItem(int $recapitulation_id)
     {
-        $recapitulation = Recapitulation::with(['outgoing_transaction_items' => function ($query) {
-            $query
-                ->selectRaw('outgoing_transaction_item.outgoing_transaction_id, outgoing_transaction_item.item_id, sum(outgoing_transaction_item.quantity) as ordered_quantity')
-                ->groupBy('item_id');
-        }])->find($recapitulation_id);
-
-        foreach ($recapitulation->outgoing_transaction_items as $outgoing_transaction_items) {
-            $recapitulation->items()->attach($outgoing_transaction_items->item_id, [
-                'quantity' => $outgoing_transaction_items->ordered_quantity
-            ]);
+        $salesman_ids = Salesman::orderBy('id')->pluck('id');
+        foreach ($salesman_ids as $salesman_id) {
+            $recapitulation = Recapitulation::select(['id'])->with(['outgoing_transaction_items' => function ($query) use ($salesman_id) {
+                $query
+                    ->selectRaw('outgoing_transaction_item.outgoing_transaction_id, outgoing_transaction_item.item_id, sum(outgoing_transaction_item.quantity) as quantities, sum(outgoing_transaction_item.total_price) as prices, sum(outgoing_transaction_item.discount) as discounts, sum(outgoing_transaction_item.total_net_price) as net_prices')
+                    ->where('outgoing_transactions.salesman_id', $salesman_id)
+                    ->groupBy(['item_id']);
+            }])->find($recapitulation_id);
+            foreach ($recapitulation->outgoing_transaction_items as $outgoing_transaction_item) {
+                $recapitulation->items()->attach($outgoing_transaction_item->item_id, [
+                    'salesman_id' => $salesman_id,
+                    'total_quantity' => $outgoing_transaction_item->quantities,
+                    'total_price' => $outgoing_transaction_item->prices,
+                    'total_discount' => $outgoing_transaction_item->discounts,
+                    'total_net_price' => $outgoing_transaction_item->net_prices,
+                ]);
+            }
         }
+        // $recapitulation = Recapitulation::with(['outgoing_transaction_items' => function ($query) {
+        //     $query
+        //         ->selectRaw('outgoing_transaction_item.outgoing_transaction_id, outgoing_transaction_item.item_id, sum(outgoing_transaction_item.quantity) as ordered_quantity')
+        //         ->groupBy('item_id');
+        // }])->find($recapitulation_id);
+
+        // foreach ($recapitulation->outgoing_transaction_items as $outgoing_transaction_items) {
+        //     $recapitulation->items()->attach($outgoing_transaction_items->item_id, [
+        //         'quantity' => $outgoing_transaction_items->ordered_quantity
+        //     ]);
+        // }
         $this->dispatch('toast-message', props: [
             'icon' => 'success',
             'text' => 'Barang berhasil disinkronisasi. Rekapitulasi siap di cetak.',

@@ -38,12 +38,20 @@ class RecapitulationTable extends DataTableComponent
                 ->sortable(),
             Column::make("Salesman", "salesman_count")
                 ->sortable(),
-            ButtonGroupColumn::make('#Aksi')
+            ButtonGroupColumn::make('Cetak Rekap')
                 ->attributes(fn($row) => ['class' => 'mx-auto'])
                 ->buttons([
-                    LinkColumn::make('Cetak')
-                        ->title(fn($row) => 'Cetak')
-                        ->location(fn($row) => route('recapitulations.print', $row->id))
+                    LinkColumn::make('Seluruh Rekap')
+                        ->title(fn($row) => 'Seluruh Rekap')
+                        ->location(fn($row) => route('recapitulations.print-all', $row->id))
+                        ->attributes(fn($row) => ['class' => 'btn btn-xs btn-success', 'target' => '_blank']),
+                    LinkColumn::make('Rekap Faldan')
+                        ->title(fn($row) => 'Rekap Faldan')
+                        ->location(fn($row) => route('recapitulations.print-by-salesman', [$row->id, 1]))
+                        ->attributes(fn($row) => ['class' => 'btn btn-xs btn-info', 'target' => '_blank']),
+                    LinkColumn::make('Rekap Alex')
+                        ->title(fn($row) => 'Rekap Alex')
+                        ->location(fn($row) => route('recapitulations.print-by-salesman', [$row->id, 2]))
                         ->attributes(fn($row) => ['class' => 'btn btn-xs btn-info', 'target' => '_blank']),
                 ]),
         ];
@@ -52,6 +60,9 @@ class RecapitulationTable extends DataTableComponent
     public function builder(): Builder
     {
         return Recapitulation::query()
+            ->whereHas('outgoing_transactions', function ($query) {
+                $query->sold();
+            })
             ->when(count($this->getTableStateToArray()['sorts']) === 0, function (Builder $builder) {
                 $builder->orderBy('date', 'desc');
             });
