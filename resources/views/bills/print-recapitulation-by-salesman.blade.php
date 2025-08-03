@@ -4,10 +4,10 @@
     <title>Rekapitulasi Per Barang</title>
 </head>
 
-<body style='width: 1024px; font-family: tahoma; font-size: 12pt; margin: 0 auto;'>
-    <div style="display:flex; font-size: 12pt; justify-content: space-between; font-family: calibri; margin: 8px 0">
+<body style='width: 1024px; font-family: tahoma; font-size: 13pt; margin: 0 auto;'>
+    <div style="display:flex; font-size: 13pt; justify-content: space-between; font-family: calibri; margin: 8px 0">
         <div>
-            <span style='font-size:12pt'><b>UD. Sukses Mandiri</b></span>
+            <span style='font-size:13pt'><b>UD. Sukses Mandiri</b></span>
             <p style="padding:0; margin:0; font-size: 11.5pt; line-height: 1.2;">
                 Jln. Medan - Banda Aceh Meunasah Mesjid Cunda,
             </p>
@@ -32,7 +32,7 @@
             </table>
         </div>
         <div>
-            <span style='font-size:12pt'><b>REKAPITULASI PER BARANG</b></span></br>
+            <span style='font-size:13pt'><b>REKAPITULASI PER BARANG</b></span></br>
             <table border="0">
                 <tbody>
                     <tr>
@@ -53,7 +53,7 @@
             </table>
         </div>
     </div>
-    <table cellspacing='0' style='width: 100%; font-size: 12pt; font-family: calibri; border-collapse: collapse;'
+    <table cellspacing='0' style='width: 100%; font-size: 13pt; font-family: calibri; border-collapse: collapse;'
         border="1">
         <thead style="text-align: center;">
             <tr>
@@ -90,7 +90,7 @@
     <div
         style="display: flex; justify-content: space-evenly; align-items: flex-start; font-family: calibri; margin: 8px 0;">
         <table border="0">
-            <tbody style="font-weight: bold; font-size: medium;">
+            <tbody style="font-weight: bold; font-size: 13pt;">
                 <tr>
                     <td>Total Barang</td>
                     <td>: {{ $recapitulation->items->sum('pivot.total_quantity') }}</td>
@@ -99,7 +99,7 @@
         </table>
 
         <table border="0">
-            <tbody style="font-weight: bold; font-size: medium;">
+            <tbody style="font-weight: bold; font-size: 13pt;">
                 <tr>
                     <td>Total Faktur</td>
                     <td>: {{ $recapitulation->outgoing_transactions->count() }}</td>
