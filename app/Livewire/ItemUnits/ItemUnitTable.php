@@ -16,6 +16,8 @@ class ItemUnitTable extends DataTableComponent
     public function configure(): void
     {
         $this->setPrimaryKey('id');
+        $this->setPerPageAccepted([20, 25, 30]);
+        $this->setDefaultPerPage(20);
     }
 
     public function columns(): array
@@ -24,6 +26,9 @@ class ItemUnitTable extends DataTableComponent
             Column::make("No.", "id")
                 ->format(fn() => ++$this->index + ($this->getPage() - 1) * $this->getPerPage()),
             Column::make("Nama Satuan", "name")
+                ->searchable()
+                ->sortable(),
+            Column::make("Ukuran", "size")
                 ->sortable(),
             ButtonGroupColumn::make('Aksi')
                 ->attributes(function ($row) {
