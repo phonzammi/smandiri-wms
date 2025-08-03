@@ -190,6 +190,7 @@ return [
         "distributor_id" => "Distributor",
         "item_id" => "Barang",
         "quantity" => "Jumlah Barang",
-        "discount" => "Diskon"
+        "discount" => "Diskon",
+        "size" => "Ukuran"
     ],
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\ItemUnits;
 
+use App\Enums\ItemUnitSize;
 use App\Models\ItemUnit;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
@@ -10,7 +11,7 @@ use Livewire\Attributes\On;
 class ItemUnitComponent extends Component
 {
     public ItemUnit $itemUnit;
-    public string $name = '';
+    public string $name, $size = '';
     public string $form_title = 'Tambah Satuan';
     public bool $is_edit = false;
 
@@ -33,6 +34,7 @@ class ItemUnitComponent extends Component
         $this->is_edit = true;
         $this->form_title = "Edit Satuan : $itemUnit->name";
         $this->name = $itemUnit->name;
+        $this->size = $itemUnit->size->value;
     }
 
     public function update()
@@ -73,6 +75,7 @@ class ItemUnitComponent extends Component
                 'uppercase',
                 Rule::unique('item_units')->ignore($this->is_edit ? $this->itemUnit->id : null),
             ],
+            'size' => ['required', Rule::enum(ItemUnitSize::class)]
         ];
     }
 
@@ -84,6 +87,7 @@ class ItemUnitComponent extends Component
 
     public function render()
     {
-        return view('livewire.item-units.item-unit-component');
+        $sizes = collect(ItemUnitSize::cases())->mapWithKeys(fn($status) => [$status->value => $status->getLabelText()])->all();
+        return view('livewire.item-units.item-unit-component', compact('sizes'));
     }
 }

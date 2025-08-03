@@ -22,4 +22,13 @@ enum ItemUnitSize: string
     {
         return $this === self::SMALL;
     }
+
+    public function getLabelText(): string
+    {
+        return match ($this) {
+            self::LARGE => 'Besar',
+            self::MEDIUM => 'Tengah',
+            self::SMALL => 'Kecil',
+        };
+    }
 }

@@ -34,7 +34,12 @@
                         @csrf
                         <x-adminlte-input name="name" type="text" label="Nama Lengkap"
                             placeholder="Nama Lengkap ..." wire:model='name' autofocus autocomplete="name" required />
-
+                        <x-adminlte-select label="Ukuran" name="size" wire:model="size" required>
+                            <option value="">Pilih Ukuran ...</option>
+                            @foreach ($sizes as $key => $size)
+                                <option value="{{ $key }}">{{ $size }}</option>
+                            @endforeach
+                        </x-adminlte-select>
                         <div>
                             <button class="btn btn-warning" type="button" disabled wire:loading
                                 wire:target="store,update">
