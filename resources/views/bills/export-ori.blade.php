@@ -24,7 +24,7 @@
 
 <body style='font-family:tahoma; font-size:12pt;'>
     <center>
-        @foreach ($outgoingTransaction->outgoing_items->chunk(15) as $chunk)
+        @foreach ($outgoingTransaction->outgoing_items->chunk(10) as $chunk)
             <div class="page" style="width:700px;">
                 <table
                     style="width: 100%; font-family: calibri; border-collapse: collapse; margin: 2px 0; text-align: left;">
