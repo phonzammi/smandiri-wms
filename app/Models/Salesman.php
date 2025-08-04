@@ -21,12 +21,12 @@ class Salesman extends Model
         return $this->hasMany(OutgoingTransaction::class);
     }
 
-    protected static function boot()
-    {
-        parent::boot();
-        // Order by name ASC
-        static::addGlobalScope('order', function (Builder $builder) {
-            $builder->orderBy('name', 'asc');
-        });
-    }
+    // protected static function boot()
+    // {
+    //     parent::boot();
+    //     // Order by name ASC
+    //     static::addGlobalScope('order', function (Builder $builder) {
+    //         $builder->orderBy('name', 'asc');
+    //     });
+    // }
 }

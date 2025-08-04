@@ -67,7 +67,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($recapitulation->items as $item)
+            @forelse ($recapitulation->items as $item)
                 <tr>
                     <th style="text-align: center;" scope=row>{{ $loop->iteration }}.</th>
                     <td>{{ $item->name }}</td>
@@ -83,7 +83,11 @@
                     <td></td>
                     <td></td>
                 </tr>
-            @endforeach
+            @empty
+                <tr>
+                    <td colspan="7" style="text-align: center;">Tidak Ditemukan</td>
+                </tr>
+            @endforelse
         </tbody>
     </table>
 

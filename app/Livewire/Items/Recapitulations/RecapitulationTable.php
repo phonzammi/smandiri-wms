@@ -46,12 +46,16 @@ class RecapitulationTable extends DataTableComponent
                         ->location(fn($row) => route('recapitulations.print-all', $row->id))
                         ->attributes(fn($row) => ['class' => 'btn btn-xs btn-success', 'target' => '_blank']),
                     LinkColumn::make('Rekap Faldan')
-                        ->title(fn($row) => 'Rekap Faldan')
+                        ->title(fn($row) => 'Faldan')
                         ->location(fn($row) => route('recapitulations.print-by-salesman', [$row->id, 1]))
                         ->attributes(fn($row) => ['class' => 'btn btn-xs btn-info', 'target' => '_blank']),
-                    LinkColumn::make('Rekap Alex')
-                        ->title(fn($row) => 'Rekap Alex')
+                    LinkColumn::make('Alex')
+                        ->title(fn($row) => 'Alex')
                         ->location(fn($row) => route('recapitulations.print-by-salesman', [$row->id, 2]))
+                        ->attributes(fn($row) => ['class' => 'btn btn-xs btn-info', 'target' => '_blank']),
+                    LinkColumn::make('Mulyadi')
+                        ->title(fn($row) => 'Mulyadi')
+                        ->location(fn($row) => route('recapitulations.print-by-salesman', [$row->id, 3]))
                         ->attributes(fn($row) => ['class' => 'btn btn-xs btn-info', 'target' => '_blank']),
                 ]),
         ];
