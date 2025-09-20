@@ -104,7 +104,7 @@ class ItemComponent extends Component
     private function generateCode()
     {
         $index = 100000;
-        $last_item = Item::latest('id')->first();
+        $last_item = Item::withTrashed()->latest('id')->first();
         $new_code_index = $last_item ? $index + $last_item->id + 1 : $index + 1;
         $this->code = str("SMBRG{$new_code_index}")->replace("G1", "G0");
     }
