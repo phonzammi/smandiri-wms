@@ -4,6 +4,7 @@ use App\Http\Controllers\PrintRecapitulationController;
 use App\Http\Controllers\PrintSalesmanIncentiveController;
 use App\Http\Controllers\PrintSalesReportController;
 use App\Http\Controllers\ProfileController;
+use App\Livewire\Dashboard\DashboardComponent;
 use App\Livewire\Distributors\DistributorComponent;
 use App\Livewire\Items\IncomingTransactions\IncomingTransactionComponent;
 use App\Livewire\Items\IncomingTransactions\ShowIncomingTransaction;
@@ -26,9 +27,7 @@ Route::get('/', function () {
 })->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', DashboardComponent::class)->name('dashboard');
     Route::get('/sales', SalesmanComponent::class)->name('sales');
     Route::get('/toko', StoreComponent::class)->name('stores');
     Route::get('/satuan', ItemUnitComponent::class)->name('item-units');
